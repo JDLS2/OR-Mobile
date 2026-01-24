@@ -52,6 +52,7 @@ export function DrawerContent(props: DrawerContentComponentProps) {
   const menuItems = [
     {key: 'Dashboard', label: 'Recent Manga', icon: 'H'},
     {key: 'Submit', label: 'Submit URL', icon: '+'},
+    {key: 'ReadInApp', label: 'Read In App', icon: 'W'},
     {key: 'Requests', label: 'My Requests', icon: 'R'},
     {key: 'Analytics', label: 'My Analytics', icon: 'A'},
   ];
