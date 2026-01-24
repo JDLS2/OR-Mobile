@@ -9,14 +9,13 @@ import {
   FlatList,
   Alert,
   Linking,
-  ActionSheetIOS,
-  Platform,
+  Modal,
 } from 'react-native';
 import {useRoute, useNavigation, RouteProp} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import {api} from '../api/api';
 import {Badge, LoadingSpinner, EmptyState} from '../components';
-import {MangaDetails, MangaProgress} from '../types';
+import {MangaDetails, MangaProgress, MediaSiteWithUrl} from '../types';
 
 type RouteParams = {
   MangaDetails: {mangaId: string};
@@ -30,6 +29,9 @@ export function MangaDetailsScreen() {
   const [mangaDetails, setMangaDetails] = useState<MangaDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showSourceModal, setShowSourceModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedSite, setSelectedSite] = useState<MediaSiteWithUrl | null>(null);
 
   useEffect(() => {
     loadMangaDetails();
@@ -56,34 +58,30 @@ export function MangaDetailsScreen() {
 
   const handleOpenSourceWebsite = () => {
     if (!mangaDetails?.mediaSitesWithUrls?.length) return;
+    setShowSourceModal(true);
+  };
 
-    const sites = mangaDetails.mediaSitesWithUrls;
+  const handleSiteSelect = (site: MediaSiteWithUrl) => {
+    setSelectedSite(site);
+    setShowConfirmModal(true);
+  };
 
-    if (Platform.OS === 'ios') {
-      ActionSheetIOS.showActionSheetWithOptions(
-        {
-          options: ['Cancel', ...sites.map(s => s.mediaSite.siteName)],
-          cancelButtonIndex: 0,
-        },
-        buttonIndex => {
-          if (buttonIndex > 0) {
-            Linking.openURL(sites[buttonIndex - 1].baseUrl);
-          }
-        },
-      );
-    } else {
-      Alert.alert(
-        'Open Source Website',
-        'Choose a website to open',
-        [
-          ...sites.map(site => ({
-            text: site.mediaSite.siteName,
-            onPress: () => Linking.openURL(site.baseUrl),
-          })),
-          {text: 'Cancel', style: 'cancel'},
-        ],
-      );
+  const handleConfirmRedirect = () => {
+    if (selectedSite) {
+      Linking.openURL(selectedSite.baseUrl);
     }
+    setShowConfirmModal(false);
+    setShowSourceModal(false);
+    setSelectedSite(null);
+  };
+
+  const handleCancelRedirect = () => {
+    setShowConfirmModal(false);
+    setSelectedSite(null);
+  };
+
+  const handleCloseSourceModal = () => {
+    setShowSourceModal(false);
   };
 
   const handleDeleteTracking = () => {
@@ -270,6 +268,63 @@ export function MangaDetailsScreen() {
           )}
         </View>
       </View>
+
+      <Modal
+        visible={showSourceModal}
+        transparent
+        animationType="fade"
+        onRequestClose={handleCloseSourceModal}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>View on Source Website</Text>
+            <Text style={styles.modalSubtitle}>Select a website to open</Text>
+            <View style={styles.dropdownContainer}>
+              {mediaSitesWithUrls?.map((site, index) => (
+                <TouchableOpacity
+                  key={site.mediaSite.id || index}
+                  style={styles.dropdownItem}
+                  onPress={() => handleSiteSelect(site)}>
+                  <Text style={styles.dropdownItemText}>
+                    {site.mediaSite.siteName}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <TouchableOpacity
+              style={styles.modalCancelButton}
+              onPress={handleCloseSourceModal}>
+              <Text style={styles.modalCancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        visible={showConfirmModal}
+        transparent
+        animationType="fade"
+        onRequestClose={handleCancelRedirect}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Confirm Redirect</Text>
+            <Text style={styles.modalMessage}>
+              Do you want to redirect to this media site?
+            </Text>
+            <View style={styles.confirmButtonsContainer}>
+              <TouchableOpacity
+                style={styles.confirmButtonNo}
+                onPress={handleCancelRedirect}>
+                <Text style={styles.confirmButtonNoText}>No</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.confirmButtonYes}
+                onPress={handleConfirmRedirect}>
+                <Text style={styles.confirmButtonYesText}>Yes</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -443,5 +498,95 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 8,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: '#1a1a1a',
+    borderRadius: 12,
+    padding: 20,
+    width: '100%',
+    maxWidth: 340,
+    borderWidth: 1,
+    borderColor: '#3f3f46',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#ffffff',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: '#71717a',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  modalMessage: {
+    fontSize: 14,
+    color: '#a1a1aa',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  dropdownContainer: {
+    borderRadius: 8,
+    overflow: 'hidden',
+    marginBottom: 16,
+  },
+  dropdownItem: {
+    backgroundColor: '#27272a',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#3f3f46',
+  },
+  dropdownItemText: {
+    fontSize: 16,
+    color: '#ffffff',
+  },
+  modalCancelButton: {
+    backgroundColor: '#27272a',
+    borderRadius: 8,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  modalCancelButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#a1a1aa',
+  },
+  confirmButtonsContainer: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  confirmButtonNo: {
+    flex: 1,
+    backgroundColor: '#27272a',
+    borderRadius: 8,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  confirmButtonNoText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#a1a1aa',
+  },
+  confirmButtonYes: {
+    flex: 1,
+    backgroundColor: '#7c3aed',
+    borderRadius: 8,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  confirmButtonYesText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#ffffff',
   },
 });

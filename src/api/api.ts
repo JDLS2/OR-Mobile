@@ -154,7 +154,7 @@ export const api = {
   submitUrl: (url: string) =>
     apiRequest<SubmitUrlResponse>('/mangaProgresses/mangaProgress', {
       method: 'POST',
-      body: JSON.stringify({provided_url: url, requestSource: 'Mobile App'}),
+      body: JSON.stringify({provided_url: url, requestSource: 'Mobile-App'}),
     }),
 
   // Manga progress merge
