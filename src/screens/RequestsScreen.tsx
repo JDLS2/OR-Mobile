@@ -11,7 +11,7 @@ import {
 import {useFocusEffect} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import {api} from '../api/api';
-import {Badge, LoadingSpinner, EmptyState} from '../components';
+import {Badge, LoadingSpinner, EmptyState, ScreenHeader} from '../components';
 import {MediaProgressRequest} from '../types';
 
 enum RequestViewType {
@@ -169,15 +169,11 @@ export function RequestsScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.iconContainer}>
-          <Text style={styles.iconText}>R</Text>
-        </View>
-        <View style={styles.headerText}>
-          <Text style={styles.title}>Media Progress Requests</Text>
-          <Text style={styles.subtitle}>Track your submitted URL requests</Text>
-        </View>
-      </View>
+      <ScreenHeader
+        title="My Requests"
+        subtitle="Track your submitted URL requests"
+        icon="R"
+      />
 
       <View style={styles.filterContainer}>
         <FlatList
@@ -259,37 +255,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0f0f0f',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    gap: 12,
-  },
-  iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: '#7c3aed',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  headerText: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#71717a',
   },
   filterContainer: {
     paddingHorizontal: 16,

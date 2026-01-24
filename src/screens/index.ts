@@ -5,3 +5,4 @@ export {SubmitUrlScreen} from './SubmitUrlScreen';
 export {RequestsScreen} from './RequestsScreen';
 export {AnalyticsScreen} from './AnalyticsScreen';
 export {SettingsScreen} from './SettingsScreen';
+export {ResetPasswordScreen} from './ResetPasswordScreen';

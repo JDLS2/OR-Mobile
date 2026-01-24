@@ -1,7 +1,6 @@
 import React, {useState, useCallback} from 'react';
 import {
   View,
-  Text,
   FlatList,
   StyleSheet,
   RefreshControl,
@@ -11,7 +10,7 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
 import {api} from '../api/api';
-import {MangaCard, LoadingSpinner, EmptyState} from '../components';
+import {MangaCard, LoadingSpinner, EmptyState, ScreenHeader} from '../components';
 import {MangaWithProgress} from '../types';
 
 type RootStackParamList = {
@@ -117,15 +116,11 @@ export function DashboardScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.iconContainer}>
-          <Text style={styles.iconText}>R</Text>
-        </View>
-        <View>
-          <Text style={styles.title}>Recent Manga</Text>
-          <Text style={styles.subtitle}>Continue where you left off</Text>
-        </View>
-      </View>
+      <ScreenHeader
+        title="Recent Manga"
+        subtitle="Continue where you left off"
+        icon="H"
+      />
 
       {recentManga.length === 0 ? (
         <EmptyState
@@ -159,34 +154,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0f0f0f',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    gap: 12,
-  },
-  iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: '#7c3aed',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#71717a',
   },
   listContent: {
     paddingHorizontal: 16,

@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import {api} from '../api/api';
+import {ScreenHeader} from '../components';
 
 export function SubmitUrlScreen() {
   const [url, setUrl] = useState('');
@@ -59,15 +60,11 @@ export function SubmitUrlScreen() {
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled">
-        <View style={styles.header}>
-          <View style={styles.iconContainer}>
-            <Text style={styles.iconText}>+</Text>
-          </View>
-          <View>
-            <Text style={styles.title}>Submit URL</Text>
-            <Text style={styles.subtitle}>Add new manga to your collection</Text>
-          </View>
-        </View>
+        <ScreenHeader
+          title="Submit URL"
+          subtitle="Add new manga to your collection"
+          icon="+"
+        />
 
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Manga URL</Text>
@@ -161,35 +158,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#0f0f0f',
   },
   scrollContent: {
-    padding: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 24,
-    gap: 12,
-  },
-  iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: '#7c3aed',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#71717a',
+    paddingBottom: 16,
+    paddingHorizontal: 16,
   },
   card: {
     backgroundColor: '#1a1a1a',

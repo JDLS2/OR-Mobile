@@ -24,7 +24,11 @@
       "Bash(npx tsc:*)",
       "Bash(npm run lint)",
       "Bash(./gradlew.bat app:installDebug:*)",
-      "Bash(npm start)"
+      "Bash(npm start)",
+      "Bash(npm search:*)",
+      "Bash(npm ls:*)",
+      "Bash(.gradlew.bat clean)",
+      "Bash(cmd /c \"gradlew.bat clean\")"
     ],
     "deny": [],
     "ask": []

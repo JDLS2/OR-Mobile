@@ -10,7 +10,7 @@ import {
 import {LineChart} from 'react-native-chart-kit';
 import Toast from 'react-native-toast-message';
 import {api} from '../api/api';
-import {Badge, LoadingSpinner} from '../components';
+import {Badge, LoadingSpinner, ScreenHeader} from '../components';
 import {AnalyticsPeriod, MediaProgressStatus, UserProgressAnalytics} from '../types';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
@@ -170,15 +170,11 @@ export function AnalyticsScreen() {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <View style={styles.header}>
-        <View style={styles.iconContainer}>
-          <Text style={styles.iconText}>A</Text>
-        </View>
-        <View>
-          <Text style={styles.title}>My Analytics</Text>
-          <Text style={styles.subtitle}>Track your reading progress</Text>
-        </View>
-      </View>
+      <ScreenHeader
+        title="My Analytics"
+        subtitle="Track your reading progress"
+        icon="A"
+      />
 
       <View style={styles.periodContainer}>
         {PERIODS.map(period => (
@@ -284,34 +280,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0f0f0f',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    gap: 12,
-  },
-  iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: '#7c3aed',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#71717a',
   },
   periodContainer: {
     flexDirection: 'row',
