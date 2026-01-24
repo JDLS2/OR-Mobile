@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx react-native@latest init MangaReader --skip-install)",
+      "Bash(npx @react-native-community/cli@latest init:*)",
+      "Bash(gradle wrapper:*)",
+      "Bash(gradle --version:*)",
+      "WebSearch",
+      "Bash(npm info:*)",
+      "Bash(npx @react-native-community/cli@latest upgrade:*)",
+      "Bash(npx react-native upgrade 0.83.1)",
+      "WebFetch(domain:react-native-community.github.io)",
+      "Bash(npm install:*)",
+      "Bash(npx react-native:*)",
+      "Bash(ls:*)",
+      "Bash(java -version:*)",
+      "Bash(npm run android:*)",
+      "Bash(./gradlew.bat --version)",
+      "Bash(echo:*)",
+      "Bash(JAVA_HOME=\"C:\\\\Program Files\\\\Java\\\\jdk-22\" ./gradlew.bat app:installDebug:*)",
+      "Bash(adb kill-server:*)",
+      "Bash(adb start-server:*)",
+      "Bash(adb devices:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
