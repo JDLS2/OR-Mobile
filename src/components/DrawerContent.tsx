@@ -15,6 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useAuth} from '../contexts/AuthContext';
 import {RootStackParamList} from '../navigation/AppNavigator';
+import {NiRELogo} from './NiRELogo';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -89,10 +90,8 @@ export function DrawerContent(props: DrawerContentComponentProps) {
     <View style={styles.container}>
       <DrawerContentScrollView {...props} contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
-          <View style={styles.logoContainer}>
-            <Text style={styles.logoText}>OR</Text>
-          </View>
-          <Text style={styles.appName}>One Read</Text>
+          <NiRELogo size="small" style={styles.logoContainer} />
+          <Text style={styles.appName}>Ni-RE</Text>
           {user?.email && (
             <Text style={styles.userEmail}>{user.email}</Text>
           )}
@@ -181,18 +180,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#27272a',
   },
   logoContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 14,
-    backgroundColor: '#7c3aed',
-    alignItems: 'center',
-    justifyContent: 'center',
     marginBottom: 12,
-  },
-  logoText: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#ffffff',
   },
   appName: {
     fontSize: 20,

@@ -28,7 +28,8 @@
       "Bash(npm search:*)",
       "Bash(npm ls:*)",
       "Bash(.gradlew.bat clean)",
-      "Bash(cmd /c \"gradlew.bat clean\")"
+      "Bash(cmd /c \"gradlew.bat clean\")",
+      "Bash(node scripts/generate-icons.js:*)"
     ],
     "deny": [],
     "ask": []

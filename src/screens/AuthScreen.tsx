@@ -12,6 +12,7 @@ import {
 import Toast from 'react-native-toast-message';
 import {useAuth} from '../contexts/AuthContext';
 import {api} from '../api/api';
+import {NiRELogo} from '../components/NiRELogo';
 
 type AuthTab = 'login' | 'signup';
 
@@ -239,10 +240,7 @@ export function AuthScreen() {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled">
         <View style={styles.header}>
-          <View style={styles.iconContainer}>
-            <Text style={styles.iconText}>OR</Text>
-          </View>
-          <Text style={styles.title}>One Read</Text>
+          <NiRELogo size="large" style={styles.logo} />
           <Text style={styles.subtitle}>Track your media reading journey</Text>
         </View>
 
@@ -296,25 +294,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 32,
   },
-  iconContainer: {
-    width: 64,
-    height: 64,
-    borderRadius: 16,
-    backgroundColor: '#7c3aed',
-    alignItems: 'center',
-    justifyContent: 'center',
+  logo: {
     marginBottom: 16,
-  },
-  iconText: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#a855f7',
-    marginBottom: 8,
   },
   subtitle: {
     fontSize: 14,

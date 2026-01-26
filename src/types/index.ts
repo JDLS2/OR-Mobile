@@ -1,4 +1,4 @@
-// TypeScript type definitions for the One Read Mobile app
+// TypeScript type definitions for the Ni-RE Mobile app
 
 // Re-export generated DTO types
 export {
