@@ -1,47 +1,19 @@
-// TypeScript type definitions for the Manga Tracker app
+// TypeScript type definitions for the One Read Mobile app
+
+// Re-export generated DTO types
+export {
+  MediaDto,
+  MediaProgressDto,
+  MediaWithProgressDto,
+  MediaWithProgressesAndSitesDto,
+  MediaSiteWithMediaUrlDto,
+  MediaSiteDto,
+} from '../../generated-types/models';
 
 export interface User {
   id: string;
   email: string;
   username: string;
-}
-
-export interface Manga {
-  id: string;
-  title: string;
-  coverImage?: string;
-  imageUrl?: string;
-  status?: string;
-  type?: string;
-  description?: string;
-  genres?: string[];
-}
-
-export interface MangaProgress {
-  id: string;
-  chapterNumber: number;
-  status?: string;
-  lastUpdatedAt: string;
-  recentChapterUrl?: string;
-  chapterUrl?: string;
-}
-
-export interface MangaWithProgress {
-  manga: Manga;
-  mangaProgress: MangaProgress;
-}
-
-export interface MediaSiteWithUrl {
-  baseUrl: string;
-  mediaSite: {
-    siteName: string;
-  };
-}
-
-export interface MangaDetails {
-  manga: Manga;
-  mangaProgresses: MangaProgress[];
-  mediaSitesWithUrls: MediaSiteWithUrl[];
 }
 
 export interface MediaProgressRequest {

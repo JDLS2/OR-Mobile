@@ -50,7 +50,7 @@ export function DrawerContent(props: DrawerContentComponentProps) {
   const currentRoute = props.state.routes[props.state.index]?.name;
 
   const menuItems = [
-    {key: 'Dashboard', label: 'Recent Manga', icon: 'H'},
+    {key: 'Dashboard', label: 'Recent Media', icon: 'H'},
     {key: 'Submit', label: 'Submit URL', icon: '+'},
     {key: 'ReadInApp', label: 'Read In App', icon: 'W'},
     {key: 'Requests', label: 'My Requests', icon: 'R'},
@@ -90,9 +90,9 @@ export function DrawerContent(props: DrawerContentComponentProps) {
       <DrawerContentScrollView {...props} contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
           <View style={styles.logoContainer}>
-            <Text style={styles.logoText}>M</Text>
+            <Text style={styles.logoText}>OR</Text>
           </View>
-          <Text style={styles.appName}>Manga Tracker</Text>
+          <Text style={styles.appName}>One Read</Text>
           {user?.email && (
             <Text style={styles.userEmail}>{user.email}</Text>
           )}

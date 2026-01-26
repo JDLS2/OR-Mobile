@@ -4,8 +4,8 @@ import {storage} from '../utils/storage';
 import {
   ApiResponse,
   AuthResponse,
-  MangaWithProgress,
-  MangaDetails,
+  MediaWithProgressDto,
+  MediaWithProgressesAndSitesDto,
   MediaProgressRequest,
   UserProgressAnalytics,
   MessageResponse,
@@ -67,7 +67,9 @@ async function apiRequest<T>(
 
     if (!response.ok) {
       // Check for auth-related errors and force logout
+      // 401 = Unauthorized, 403 = Forbidden, 404 = Not Found, 440 = Login Timeout
       if (
+        response.status === 401 ||
         response.status === 403 ||
         response.status === 404 ||
         response.status === 440
@@ -91,13 +93,6 @@ async function apiRequest<T>(
     const errorMessage =
       error instanceof Error ? error.message : 'Network error';
 
-    if (
-      errorMessage.toLowerCase().includes('fetch') ||
-      errorMessage.toLowerCase().includes('network')
-    ) {
-      await clearAuthAndLogout();
-    }
-
     return {error: errorMessage};
   }
 }
@@ -111,7 +106,7 @@ export const api = {
     }),
 
   signup: (email: string, password: string) =>
-    apiRequest<AuthResponse>('/auth/register', {
+    apiRequest<MessageResponse>('/auth/register', {
       method: 'POST',
       body: JSON.stringify({email, password}),
     }),
@@ -144,31 +139,31 @@ export const api = {
     });
   },
 
-  // Manga endpoints
-  getRecentManga: () => apiRequest<MangaWithProgress[]>('/mangas/recent'),
+  // Media endpoints
+  getRecentMedia: () => apiRequest<MediaWithProgressDto[]>('/medias/recent'),
 
-  getMangaChapters: (mangaId: string) =>
-    apiRequest<MangaDetails>(`/mangas/${mangaId}`),
+  getMediaDetails: (mediaId: string) =>
+    apiRequest<MediaWithProgressesAndSitesDto>(`/medias/${mediaId}`),
 
   // URL submission
   submitUrl: (url: string) =>
-    apiRequest<SubmitUrlResponse>('/mangaProgresses/mangaProgress', {
+    apiRequest<SubmitUrlResponse>('/mediaProgresses/mediaProgress', {
       method: 'POST',
       body: JSON.stringify({provided_url: url, requestSource: 'Mobile-App'}),
     }),
 
-  // Manga progress merge
-  requestMediaMerge: (mangaProgressId: string) =>
-    apiRequest<MessageResponse>('/mangaProgresses/requestMediaMerge', {
+  // Media progress merge
+  requestMediaMerge: (mediaProgressId: string) =>
+    apiRequest<MessageResponse>('/mediaProgresses/requestMediaMerge', {
       method: 'POST',
-      body: JSON.stringify({mediaProgressToMergeID: mangaProgressId}),
+      body: JSON.stringify({mediaProgressToMergeID: mediaProgressId}),
     }),
 
   // Delete tracked media
-  deleteTrackedMedia: (mangaId: string) =>
-    apiRequest<MessageResponse>('/mangaProgresses/deleteTrackedMedia', {
+  deleteTrackedMedia: (mediaId: string) =>
+    apiRequest<MessageResponse>('/mediaProgresses/deleteTrackedMedia', {
       method: 'POST',
-      body: JSON.stringify({manga_id: mangaId}),
+      body: JSON.stringify({media_id: mediaId}),
     }),
 
   // Media progress requests

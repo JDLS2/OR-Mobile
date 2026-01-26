@@ -10,33 +10,33 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
 import {api} from '../api/api';
-import {MangaCard, LoadingSpinner, EmptyState, ScreenHeader} from '../components';
-import {MangaWithProgress} from '../types';
+import {MediaCard, LoadingSpinner, EmptyState, ScreenHeader} from '../components';
+import {MediaWithProgressDto} from '../types';
 
 type RootStackParamList = {
-  MangaDetails: {mangaId: string};
+  MediaDetails: {mediaId: string};
 };
 
 export function DashboardScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const [recentManga, setRecentManga] = useState<MangaWithProgress[]>([]);
+  const [recentMedia, setRecentMedia] = useState<MediaWithProgressDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const loadRecentManga = useCallback(async (showLoading = true) => {
+  const loadRecentMedia = useCallback(async (showLoading = true) => {
     if (showLoading) {
       setIsLoading(true);
     }
-    const {data, error} = await api.getRecentManga();
+    const {data, error} = await api.getRecentMedia();
 
     if (error) {
       Toast.show({
         type: 'error',
-        text1: 'Error loading manga',
+        text1: 'Error loading media',
         text2: error,
       });
     } else if (data) {
-      setRecentManga(data);
+      setRecentMedia(data);
     }
 
     setIsLoading(false);
@@ -45,20 +45,20 @@ export function DashboardScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      loadRecentManga();
-    }, [loadRecentManga]),
+      loadRecentMedia();
+    }, [loadRecentMedia]),
   );
 
   const handleRefresh = () => {
     setIsRefreshing(true);
-    loadRecentManga(false);
+    loadRecentMedia(false);
   };
 
-  const handleMangaPress = (mangaId: string) => {
-    navigation.navigate('MangaDetails', {mangaId});
+  const handleMediaPress = (mediaId: string) => {
+    navigation.navigate('MediaDetails', {mediaId});
   };
 
-  const handleMerge = (mangaProgress: any) => {
+  const handleMerge = (mediaProgress: any) => {
     Alert.alert(
       'Merge Media',
       'What this will do: detect if there\'s another media you are reading that matches this. If we detect it, we will combine those two media. All chapters will then be tracked under 1 Media.\n\nContinue?',
@@ -70,7 +70,7 @@ export function DashboardScreen() {
         {
           text: 'Yes',
           onPress: async () => {
-            const {data, error} = await api.requestMediaMerge(mangaProgress.id);
+            const {data, error} = await api.requestMediaMerge(String(mediaProgress.mediaId));
 
             if (error) {
               Toast.show({
@@ -84,7 +84,7 @@ export function DashboardScreen() {
                 text1: 'Merge Request Submitted',
                 text2: data.message || 'Merge request successful',
               });
-              loadRecentManga(false);
+              loadRecentMedia(false);
             }
           },
         },
@@ -92,46 +92,46 @@ export function DashboardScreen() {
     );
   };
 
-  const renderItem = ({item}: {item: MangaWithProgress}) => {
-    const {manga, mangaProgress} = item;
+  const renderItem = ({item}: {item: MediaWithProgressDto}) => {
+    const {media, mediaProgress} = item;
     return (
-      <MangaCard
-        id={manga.id}
-        title={manga.title}
-        coverImage={manga.coverImage || manga.imageUrl}
-        chaptersRead={mangaProgress.chapterNumber}
-        lastRead={mangaProgress.lastUpdatedAt}
-        status={manga.status}
-        type={manga.type}
+      <MediaCard
+        id={String(media?.id)}
+        title={media?.title || ''}
+        imageUrl={media?.imageUrl}
+        chaptersRead={mediaProgress?.chapterNumber}
+        lastRead={mediaProgress?.lastUpdatedAt?.toISOString?.() || (mediaProgress?.lastUpdatedAt as unknown as string)}
+        status={media?.status}
+        type={media?.type}
         showMergeButton={true}
-        onPress={() => handleMangaPress(manga.id)}
-        onMerge={() => handleMerge(mangaProgress)}
+        onPress={() => handleMediaPress(String(media?.id))}
+        onMerge={() => handleMerge(mediaProgress)}
       />
     );
   };
 
-  if (isLoading) {
-    return <LoadingSpinner fullScreen />;
-  }
-
   return (
     <View style={styles.container}>
       <ScreenHeader
-        title="Recent Manga"
+        title="Recent Media"
         subtitle="Continue where you left off"
         icon="H"
       />
 
-      {recentManga.length === 0 ? (
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <LoadingSpinner />
+        </View>
+      ) : recentMedia.length === 0 ? (
         <EmptyState
-          title="No recent manga"
-          message="Start reading to see your recent manga here"
+          title="No recent media"
+          message="Start reading to see your recent media here"
         />
       ) : (
         <FlatList
-          data={recentManga}
+          data={recentMedia}
           renderItem={renderItem}
-          keyExtractor={item => item.manga.id}
+          keyExtractor={item => String(item.media?.id)}
           numColumns={2}
           columnWrapperStyle={styles.row}
           contentContainerStyle={styles.listContent}
@@ -154,6 +154,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0f0f0f',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   listContent: {
     paddingHorizontal: 16,

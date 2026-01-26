@@ -143,7 +143,7 @@ export function SettingsScreen() {
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Manga Tracker</Text>
+        <Text style={styles.footerText}>One Read</Text>
         <Text style={styles.versionText}>Version 1.0.0</Text>
       </View>
     </ScrollView>

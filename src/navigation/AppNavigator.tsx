@@ -8,7 +8,7 @@ import {LoadingSpinner, DrawerContent} from '../components';
 import {
   AuthScreen,
   DashboardScreen,
-  MangaDetailsScreen,
+  MediaDetailsScreen,
   SubmitUrlScreen,
   RequestsScreen,
   AnalyticsScreen,
@@ -19,7 +19,7 @@ import {
 export type RootStackParamList = {
   Auth: undefined;
   Main: undefined;
-  MangaDetails: {mangaId: string};
+  MediaDetails: {mediaId: string};
   ResetPassword: undefined;
 };
 
@@ -28,7 +28,7 @@ export type DrawerParamList = {
   Submit: undefined;
   Requests: undefined;
   Analytics: undefined;
-  ReadInApp: undefined;
+  ReadInApp: {url?: string} | undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -76,8 +76,8 @@ export function AppNavigator() {
           <>
             <Stack.Screen name="Main" component={MainDrawer} />
             <Stack.Screen
-              name="MangaDetails"
-              component={MangaDetailsScreen}
+              name="MediaDetails"
+              component={MediaDetailsScreen}
               options={{
                 animation: 'slide_from_right',
               }}

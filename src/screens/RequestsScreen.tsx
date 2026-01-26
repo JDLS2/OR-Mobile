@@ -160,12 +160,9 @@ export function RequestsScreen() {
 
   const filteredRequests = getFilteredRequests();
   const shouldShowRetryButton =
+    !isLoading &&
     (viewType === RequestViewType.Overview || viewType === RequestViewType.Failed) &&
     hasFailedRequests();
-
-  if (isLoading) {
-    return <LoadingSpinner fullScreen />;
-  }
 
   return (
     <View style={styles.container}>
@@ -217,7 +214,11 @@ export function RequestsScreen() {
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Request History</Text>
 
-        {requests.length === 0 ? (
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <LoadingSpinner />
+          </View>
+        ) : requests.length === 0 ? (
           <EmptyState
             title="No Requests Found"
             message="You haven't submitted any URLs yet."
@@ -313,6 +314,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#ffffff',
     marginBottom: 16,
+  },
+  loadingContainer: {
+    paddingVertical: 40,
+    alignItems: 'center',
   },
   overviewContainer: {
     gap: 12,

@@ -11,73 +11,102 @@ import {
   Linking,
   Modal,
 } from 'react-native';
-import {useRoute, useNavigation, RouteProp} from '@react-navigation/native';
+import {useRoute, useNavigation, RouteProp, CommonActions} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import {api} from '../api/api';
 import {Badge, LoadingSpinner, EmptyState} from '../components';
-import {MangaDetails, MangaProgress, MediaSiteWithUrl} from '../types';
+import {MediaWithProgressesAndSitesDto, MediaProgressDto, MediaSiteWithMediaUrlDto} from '../types';
 
 type RouteParams = {
-  MangaDetails: {mangaId: string};
+  MediaDetails: {mediaId: string};
 };
 
-export function MangaDetailsScreen() {
-  const route = useRoute<RouteProp<RouteParams, 'MangaDetails'>>();
-  const navigation = useNavigation();
-  const {mangaId} = route.params;
+type NavigationProp = {
+  dispatch: (action: any) => void;
+  goBack: () => void;
+};
 
-  const [mangaDetails, setMangaDetails] = useState<MangaDetails | null>(null);
+export function MediaDetailsScreen() {
+  const route = useRoute<RouteProp<RouteParams, 'MediaDetails'>>();
+  const navigation = useNavigation<NavigationProp>();
+  const {mediaId} = route.params;
+
+  const [mediaDetails, setMediaDetails] = useState<MediaWithProgressesAndSitesDto | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showSourceModal, setShowSourceModal] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [selectedSite, setSelectedSite] = useState<MediaSiteWithUrl | null>(null);
+  const [showOpenUrlModal, setShowOpenUrlModal] = useState(false);
+  const [pendingUrl, setPendingUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    loadMangaDetails();
+    loadMediaDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mangaId]);
+  }, [mediaId]);
 
-  const loadMangaDetails = async () => {
+  const loadMediaDetails = async () => {
     setIsLoading(true);
-    const {data, error} = await api.getMangaChapters(mangaId);
+    const {data, error} = await api.getMediaDetails(mediaId);
 
     if (error) {
       Toast.show({
         type: 'error',
-        text1: 'Error loading manga',
+        text1: 'Error loading media',
         text2: error,
       });
       navigation.goBack();
     } else if (data) {
-      setMangaDetails(data);
+      setMediaDetails(data);
     }
 
     setIsLoading(false);
   };
 
   const handleOpenSourceWebsite = () => {
-    if (!mangaDetails?.mediaSitesWithUrls?.length) return;
+    if (!mediaDetails?.mediaSitesWithUrls?.length) return;
     setShowSourceModal(true);
   };
 
-  const handleSiteSelect = (site: MediaSiteWithUrl) => {
-    setSelectedSite(site);
-    setShowConfirmModal(true);
-  };
-
-  const handleConfirmRedirect = () => {
-    if (selectedSite) {
-      Linking.openURL(selectedSite.baseUrl);
+  const handleSiteSelect = (site: MediaSiteWithMediaUrlDto) => {
+    if (site.baseUrl) {
+      setPendingUrl(site.baseUrl);
+      setShowSourceModal(false);
+      setShowOpenUrlModal(true);
     }
-    setShowConfirmModal(false);
-    setShowSourceModal(false);
-    setSelectedSite(null);
   };
 
-  const handleCancelRedirect = () => {
-    setShowConfirmModal(false);
-    setSelectedSite(null);
+  const handleUrlSelect = (url: string) => {
+    setPendingUrl(url);
+    setShowOpenUrlModal(true);
+  };
+
+  const handleOpenInBrowser = () => {
+    if (pendingUrl) {
+      Linking.openURL(pendingUrl);
+    }
+    setShowOpenUrlModal(false);
+    setPendingUrl(null);
+  };
+
+  const handleOpenInApp = () => {
+    if (pendingUrl) {
+      // Navigate to ReadInApp screen with the URL
+      navigation.dispatch(
+        CommonActions.navigate({
+          name: 'Main',
+          params: {
+            screen: 'ReadInApp',
+            params: {url: pendingUrl},
+          },
+        })
+      );
+    }
+    setShowOpenUrlModal(false);
+    setPendingUrl(null);
+  };
+
+  const handleCancelOpenUrl = () => {
+    setShowOpenUrlModal(false);
+    setPendingUrl(null);
   };
 
   const handleCloseSourceModal = () => {
@@ -98,7 +127,7 @@ export function MangaDetailsScreen() {
           style: 'destructive',
           onPress: async () => {
             setIsDeleting(true);
-            const {data, error, statusCode} = await api.deleteTrackedMedia(mangaId);
+            const {data, error, statusCode} = await api.deleteTrackedMedia(mediaId);
 
             if (error || !statusCode || statusCode < 200 || statusCode >= 300) {
               Toast.show({
@@ -123,7 +152,7 @@ export function MangaDetailsScreen() {
   };
 
   const handleOpenChapter = (url: string) => {
-    Linking.openURL(url);
+    handleUrlSelect(url);
   };
 
   const getStatusBadgeVariant = (status: string) => {
@@ -131,15 +160,17 @@ export function MangaDetailsScreen() {
       case 'READ':
         return 'success';
       case 'RE_READ':
+      case 'RE-READ':
         return 'secondary';
       case 'IN_PROGRESS':
+      case 'IN PROGRESS':
         return 'info';
       default:
         return 'secondary';
     }
   };
 
-  const renderChapterItem = ({item}: {item: MangaProgress}) => (
+  const renderChapterItem = ({item}: {item: MediaProgressDto}) => (
     <TouchableOpacity
       style={styles.chapterItem}
       onPress={() => item.recentChapterUrl && handleOpenChapter(item.recentChapterUrl)}
@@ -163,15 +194,9 @@ export function MangaDetailsScreen() {
     </TouchableOpacity>
   );
 
-  if (isLoading) {
-    return <LoadingSpinner fullScreen />;
-  }
-
-  if (!mangaDetails) {
-    return null;
-  }
-
-  const {manga, mangaProgresses, mediaSitesWithUrls} = mangaDetails;
+  const media = mediaDetails?.media;
+  const mediaProgresses = mediaDetails?.mediaProgresses;
+  const mediaSitesWithUrls = mediaDetails?.mediaSitesWithUrls;
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -182,16 +207,28 @@ export function MangaDetailsScreen() {
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle} numberOfLines={1}>
-          {manga.title}
+          {media?.title || 'Loading...'}
         </Text>
       </View>
 
-      <View style={styles.content}>
-        <View style={styles.mangaInfoCard}>
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <LoadingSpinner />
+        </View>
+      ) : !mediaDetails ? (
+        <View style={styles.loadingContainer}>
+          <EmptyState
+            title="Media Not Found"
+            message="Unable to load media details."
+          />
+        </View>
+      ) : (
+        <View style={styles.content}>
+        <View style={styles.mediaInfoCard}>
           <View style={styles.coverContainer}>
-            {manga.coverImage || manga.imageUrl ? (
+            {media?.imageUrl ? (
               <Image
-                source={{uri: manga.coverImage || manga.imageUrl}}
+                source={{uri: media.imageUrl}}
                 style={styles.coverImage}
                 resizeMode="cover"
               />
@@ -202,18 +239,18 @@ export function MangaDetailsScreen() {
             )}
           </View>
 
-          <View style={styles.mangaInfo}>
+          <View style={styles.mediaInfo}>
             <View style={styles.titleRow}>
-              <Text style={styles.mangaTitle}>{manga.title}</Text>
-              {manga.type && (
-                <Badge variant="outline">{manga.type}</Badge>
+              <Text style={styles.mediaTitle}>{media?.title}</Text>
+              {media?.type && (
+                <Badge variant="outline">{media.type}</Badge>
               )}
             </View>
 
-            {manga.description && (
+            {media?.description && (
               <View style={styles.descriptionSection}>
                 <Text style={styles.sectionTitle}>Description</Text>
-                <Text style={styles.description}>{manga.description}</Text>
+                <Text style={styles.description}>{media.description}</Text>
               </View>
             )}
 
@@ -225,16 +262,6 @@ export function MangaDetailsScreen() {
                   View on Source Website
                 </Text>
               </TouchableOpacity>
-            )}
-
-            {manga.genres && manga.genres.length > 0 && (
-              <View style={styles.genresContainer}>
-                {manga.genres.map((genre: string) => (
-                  <Badge key={genre} variant="outline" style={styles.genreBadge}>
-                    {genre}
-                  </Badge>
-                ))}
-              </View>
             )}
           </View>
         </View>
@@ -252,22 +279,23 @@ export function MangaDetailsScreen() {
             </TouchableOpacity>
           </View>
 
-          {!mangaProgresses || mangaProgresses.length === 0 ? (
+          {!mediaProgresses || mediaProgresses.length === 0 ? (
             <EmptyState
               title="No Chapters Read"
-              message="You haven't tracked any chapters for this manga yet."
+              message="You haven't tracked any chapters for this media yet."
             />
           ) : (
             <FlatList
-              data={mangaProgresses}
+              data={mediaProgresses}
               renderItem={renderChapterItem}
-              keyExtractor={(item, index) => item.id || index.toString()}
+              keyExtractor={(item, index) => `${item.mediaId}-${item.chapterNumber}-${index}`}
               scrollEnabled={false}
               ItemSeparatorComponent={() => <View style={styles.separator} />}
             />
           )}
         </View>
       </View>
+      )}
 
       <Modal
         visible={showSourceModal}
@@ -281,11 +309,11 @@ export function MangaDetailsScreen() {
             <View style={styles.dropdownContainer}>
               {mediaSitesWithUrls?.map((site, index) => (
                 <TouchableOpacity
-                  key={site.mediaSite.id || index}
+                  key={site.mediaSite?.id || index}
                   style={styles.dropdownItem}
                   onPress={() => handleSiteSelect(site)}>
                   <Text style={styles.dropdownItemText}>
-                    {site.mediaSite.siteName}
+                    {site.mediaSite?.siteName}
                   </Text>
                 </TouchableOpacity>
               ))}
@@ -300,26 +328,31 @@ export function MangaDetailsScreen() {
       </Modal>
 
       <Modal
-        visible={showConfirmModal}
+        visible={showOpenUrlModal}
         transparent
         animationType="fade"
-        onRequestClose={handleCancelRedirect}>
+        onRequestClose={handleCancelOpenUrl}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Confirm Redirect</Text>
+            <Text style={styles.modalTitle}>Open URL</Text>
             <Text style={styles.modalMessage}>
-              Do you want to redirect to this media site?
+              Open this in-app, or in browser?
             </Text>
-            <View style={styles.confirmButtonsContainer}>
+            <View style={styles.openUrlButtonsContainer}>
               <TouchableOpacity
-                style={styles.confirmButtonNo}
-                onPress={handleCancelRedirect}>
-                <Text style={styles.confirmButtonNoText}>No</Text>
+                style={styles.openUrlButton}
+                onPress={handleOpenInApp}>
+                <Text style={styles.openUrlButtonText}>Open In-App</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.confirmButtonYes}
-                onPress={handleConfirmRedirect}>
-                <Text style={styles.confirmButtonYesText}>Yes</Text>
+                style={styles.openUrlButton}
+                onPress={handleOpenInBrowser}>
+                <Text style={styles.openUrlButtonText}>Open In Browser</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.cancelUrlButton}
+                onPress={handleCancelOpenUrl}>
+                <Text style={styles.cancelUrlButtonText}>Cancel</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -357,10 +390,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#ffffff',
   },
+  loadingContainer: {
+    flex: 1,
+    paddingVertical: 100,
+    alignItems: 'center',
+  },
   content: {
     padding: 16,
   },
-  mangaInfoCard: {
+  mediaInfoCard: {
     backgroundColor: '#1a1a1a',
     borderRadius: 12,
     padding: 16,
@@ -386,7 +424,7 @@ const styles = StyleSheet.create({
   placeholderText: {
     color: '#71717a',
   },
-  mangaInfo: {},
+  mediaInfo: {},
   titleRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -394,7 +432,7 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 12,
   },
-  mangaTitle: {
+  mediaTitle: {
     fontSize: 20,
     fontWeight: '600',
     color: '#ffffff',
@@ -427,14 +465,6 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 14,
     fontWeight: '500',
-  },
-  genresContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  genreBadge: {
-    marginBottom: 4,
   },
   chaptersCard: {
     backgroundColor: '#1a1a1a',
@@ -561,32 +591,29 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#a1a1aa',
   },
-  confirmButtonsContainer: {
-    flexDirection: 'row',
-    gap: 12,
+  openUrlButtonsContainer: {
+    gap: 10,
   },
-  confirmButtonNo: {
-    flex: 1,
-    backgroundColor: '#27272a',
+  openUrlButton: {
+    backgroundColor: '#7c3aed',
     borderRadius: 8,
-    paddingVertical: 12,
+    paddingVertical: 14,
     alignItems: 'center',
   },
-  confirmButtonNoText: {
+  openUrlButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
+  cancelUrlButton: {
+    backgroundColor: '#27272a',
+    borderRadius: 8,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  cancelUrlButtonText: {
     fontSize: 14,
     fontWeight: '500',
     color: '#a1a1aa',
-  },
-  confirmButtonYes: {
-    flex: 1,
-    backgroundColor: '#7c3aed',
-    borderRadius: 8,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  confirmButtonYesText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#ffffff',
   },
 });

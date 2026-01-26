@@ -13,11 +13,11 @@ const {width} = Dimensions.get('window');
 const CARD_WIDTH = (width - 48) / 2; // 2 columns with padding
 const CARD_IMAGE_HEIGHT = (CARD_WIDTH * 4) / 3; // 3:4 aspect ratio
 
-interface MangaCardProps {
+interface MediaCardProps {
   id: string;
   title: string;
-  coverImage?: string;
-  chaptersRead?: number;
+  imageUrl?: string;
+  chaptersRead?: string | number;
   lastRead?: string;
   status?: string;
   type?: string;
@@ -26,16 +26,16 @@ interface MangaCardProps {
   showMergeButton?: boolean;
 }
 
-export function MangaCard({
+export function MediaCard({
   title,
-  coverImage,
-  chaptersRead = 0,
+  imageUrl,
+  chaptersRead,
   lastRead,
   status = 'Reading',
   onPress,
   onMerge,
   showMergeButton = false,
-}: MangaCardProps) {
+}: MediaCardProps) {
   const formatDate = (dateString: string) => {
     try {
       return new Date(dateString).toLocaleDateString();
@@ -47,9 +47,9 @@ export function MangaCard({
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
       <View style={styles.imageContainer}>
-        {coverImage ? (
+        {imageUrl ? (
           <Image
-            source={{uri: coverImage}}
+            source={{uri: imageUrl}}
             style={styles.image}
             resizeMode="cover"
           />

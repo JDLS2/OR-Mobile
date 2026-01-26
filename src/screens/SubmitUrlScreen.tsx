@@ -42,7 +42,7 @@ export function SubmitUrlScreen() {
       Toast.show({
         type: 'success',
         text1: 'URL submitted successfully!',
-        text2: 'Processing manga data...',
+        text2: 'Processing media data...',
       });
       setTimeout(() => {
         setUrl('');
@@ -62,21 +62,21 @@ export function SubmitUrlScreen() {
         keyboardShouldPersistTaps="handled">
         <ScreenHeader
           title="Submit URL"
-          subtitle="Add new manga to your collection"
+          subtitle="Add new media to your collection"
           icon="+"
         />
 
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Manga URL</Text>
+          <Text style={styles.cardTitle}>Media URL</Text>
           <Text style={styles.cardDescription}>
-            Enter a manga website URL to add it to your tracking list
+            Enter a media website URL to add it to your tracking list
           </Text>
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Website URL</Text>
             <TextInput
               style={styles.input}
-              placeholder="https://example.com/manga/..."
+              placeholder="https://example.com/media/..."
               placeholderTextColor="#71717a"
               value={url}
               onChangeText={setUrl}
@@ -118,7 +118,7 @@ export function SubmitUrlScreen() {
             <View style={styles.stepContent}>
               <Text style={styles.stepTitle}>Submit URL</Text>
               <Text style={styles.stepDescription}>
-                Paste the URL of the manga page you want to track
+                Paste the URL of the media page you want to track
               </Text>
             </View>
           </View>
@@ -130,7 +130,7 @@ export function SubmitUrlScreen() {
             <View style={styles.stepContent}>
               <Text style={styles.stepTitle}>Processing</Text>
               <Text style={styles.stepDescription}>
-                Backend extracts manga information and chapter list
+                Backend extracts media information and chapter list
               </Text>
             </View>
           </View>

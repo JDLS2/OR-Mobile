@@ -1,4 +1,4 @@
-import React, {useState, useRef, useCallback} from 'react';
+import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {
   View,
   Text,
@@ -9,11 +9,17 @@ import {
 } from 'react-native';
 import {WebView} from 'react-native-webview';
 import type {WebViewNavigation} from 'react-native-webview';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useRoute, RouteProp} from '@react-navigation/native';
 import {api} from '../api/api';
 import {ScreenHeader} from '../components';
 
+type ReadInAppRouteParams = {
+  ReadInApp: {url?: string} | undefined;
+};
+
 export function ReadInAppScreen() {
+  const route = useRoute<RouteProp<ReadInAppRouteParams, 'ReadInApp'>>();
+  const urlParam = route.params?.url;
   const [showConsentModal, setShowConsentModal] = useState(false);
   const [hasConsented, setHasConsented] = useState(false);
   const [currentUrl, setCurrentUrl] = useState('');
@@ -29,9 +35,28 @@ export function ReadInAppScreen() {
     }, [hasConsented])
   );
 
+  // Handle URL parameter when navigated from MediaDetailsScreen
+  useEffect(() => {
+    if (urlParam && hasConsented) {
+      let url = urlParam;
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
+      setCurrentUrl(url);
+    }
+  }, [urlParam, hasConsented]);
+
   const handleConsent = () => {
     setShowConsentModal(false);
     setHasConsented(true);
+    // If a URL was passed as parameter, load it after consent
+    if (urlParam) {
+      let url = urlParam;
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
+      setCurrentUrl(url);
+    }
   };
 
   const handleDecline = () => {

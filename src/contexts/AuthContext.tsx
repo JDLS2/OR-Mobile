@@ -109,9 +109,9 @@ export function AuthProvider({children}: {children: ReactNode}) {
   };
 
   const signup = async (email: string, password: string): Promise<boolean> => {
-    const {data, error} = await api.signup(email, password);
+    const {error} = await api.signup(email, password);
 
-    if (error || !data) {
+    if (error) {
       Toast.show({
         type: 'error',
         text1: 'Signup failed',
@@ -120,14 +120,10 @@ export function AuthProvider({children}: {children: ReactNode}) {
       return false;
     }
 
-    await storage.setToken(data.token);
-    await storage.setUser(data.user);
-    setUser(data.user);
-
     Toast.show({
       type: 'success',
-      text1: 'Account created!',
-      text2: 'Welcome to Manga Tracker',
+      text1: 'Account Creation Successful!',
+      text2: 'E-mail sent to authenticate your account.',
     });
 
     return true;

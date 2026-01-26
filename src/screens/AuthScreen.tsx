@@ -134,7 +134,7 @@ export function AuthScreen() {
       <View style={styles.form}>
         <Text style={styles.cardTitle}>Welcome back</Text>
         <Text style={styles.cardDescription}>
-          Login to continue tracking your manga
+          Login to continue tracking your media
         </Text>
 
         <View style={styles.inputGroup}>
@@ -188,7 +188,7 @@ export function AuthScreen() {
     <View style={styles.form}>
       <Text style={styles.cardTitle}>Create account</Text>
       <Text style={styles.cardDescription}>
-        Sign up to start tracking your manga
+        Sign up to start tracking your media
       </Text>
 
       <View style={styles.inputGroup}>
@@ -240,10 +240,10 @@ export function AuthScreen() {
         keyboardShouldPersistTaps="handled">
         <View style={styles.header}>
           <View style={styles.iconContainer}>
-            <Text style={styles.iconText}>M</Text>
+            <Text style={styles.iconText}>OR</Text>
           </View>
-          <Text style={styles.title}>Manga Tracker</Text>
-          <Text style={styles.subtitle}>Track your manga reading journey</Text>
+          <Text style={styles.title}>One Read</Text>
+          <Text style={styles.subtitle}>Track your media reading journey</Text>
         </View>
 
         <View style={styles.tabContainer}>
