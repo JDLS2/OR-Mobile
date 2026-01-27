@@ -15,15 +15,18 @@
 
 import * as runtime from '../runtime';
 import type {
+  AddUserRequest,
   UserDto,
 } from '../models/index';
 import {
+    AddUserRequestFromJSON,
+    AddUserRequestToJSON,
     UserDtoFromJSON,
     UserDtoToJSON,
 } from '../models/index';
 
 export interface AddNewUserRequest {
-    requestBody: { [key: string]: string; };
+    addUserRequest: AddUserRequest;
 }
 
 /**
@@ -34,10 +37,10 @@ export class UserControllerApi extends runtime.BaseAPI {
     /**
      */
     async addNewUserRaw(requestParameters: AddNewUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
-        if (requestParameters['requestBody'] == null) {
+        if (requestParameters['addUserRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestBody',
-                'Required parameter "requestBody" was null or undefined when calling addNewUser().'
+                'addUserRequest',
+                'Required parameter "addUserRequest" was null or undefined when calling addNewUser().'
             );
         }
 
@@ -55,7 +58,7 @@ export class UserControllerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters['requestBody'],
+            body: AddUserRequestToJSON(requestParameters['addUserRequest']),
         }, initOverrides);
 
         if (this.isJsonMime(response.headers.get('content-type'))) {

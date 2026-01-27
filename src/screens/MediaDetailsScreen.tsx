@@ -127,7 +127,7 @@ export function MediaDetailsScreen() {
           style: 'destructive',
           onPress: async () => {
             setIsDeleting(true);
-            const {data, error, statusCode} = await api.deleteTrackedMedia(mediaId);
+            const {data, error, statusCode} = await api.deleteTrackedMedia(Number(mediaId));
 
             if (error || !statusCode || statusCode < 200 || statusCode >= 300) {
               Toast.show({
@@ -139,7 +139,7 @@ export function MediaDetailsScreen() {
               Toast.show({
                 type: 'success',
                 text1: 'Tracking Deleted',
-                text2: data?.message || 'Successfully removed all progress tracking',
+                text2: data?.body || 'Successfully removed all progress tracking',
               });
               navigation.goBack();
             }

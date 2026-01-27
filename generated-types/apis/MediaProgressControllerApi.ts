@@ -15,19 +15,28 @@
 
 import * as runtime from '../runtime';
 import type {
+  AddMediaProgressRequest,
+  DeleteTrackedMediaRequest,
   MediaMergeRequest,
+  MessageResponse,
 } from '../models/index';
 import {
+    AddMediaProgressRequestFromJSON,
+    AddMediaProgressRequestToJSON,
+    DeleteTrackedMediaRequestFromJSON,
+    DeleteTrackedMediaRequestToJSON,
     MediaMergeRequestFromJSON,
     MediaMergeRequestToJSON,
+    MessageResponseFromJSON,
+    MessageResponseToJSON,
 } from '../models/index';
 
 export interface AddNewMediaProgressRequest {
-    requestBody: { [key: string]: string; };
+    addMediaProgressRequest: AddMediaProgressRequest;
 }
 
-export interface DeleteTrackedMediaRequest {
-    requestBody: { [key: string]: number; };
+export interface DeleteTrackedMediaOperationRequest {
+    deleteTrackedMediaRequest: DeleteTrackedMediaRequest;
 }
 
 export interface RequestMediaMergeRequest {
@@ -41,11 +50,11 @@ export class MediaProgressControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async addNewMediaProgressRaw(requestParameters: AddNewMediaProgressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: string; }>> {
-        if (requestParameters['requestBody'] == null) {
+    async addNewMediaProgressRaw(requestParameters: AddNewMediaProgressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MessageResponse>> {
+        if (requestParameters['addMediaProgressRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestBody',
-                'Required parameter "requestBody" was null or undefined when calling addNewMediaProgress().'
+                'addMediaProgressRequest',
+                'Required parameter "addMediaProgressRequest" was null or undefined when calling addNewMediaProgress().'
             );
         }
 
@@ -63,26 +72,26 @@ export class MediaProgressControllerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters['requestBody'],
+            body: AddMediaProgressRequestToJSON(requestParameters['addMediaProgressRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => MessageResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async addNewMediaProgress(requestParameters: AddNewMediaProgressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: string; }> {
+    async addNewMediaProgress(requestParameters: AddNewMediaProgressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MessageResponse> {
         const response = await this.addNewMediaProgressRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async deleteTrackedMediaRaw(requestParameters: DeleteTrackedMediaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: string; }>> {
-        if (requestParameters['requestBody'] == null) {
+    async deleteTrackedMediaRaw(requestParameters: DeleteTrackedMediaOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MessageResponse>> {
+        if (requestParameters['deleteTrackedMediaRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestBody',
-                'Required parameter "requestBody" was null or undefined when calling deleteTrackedMedia().'
+                'deleteTrackedMediaRequest',
+                'Required parameter "deleteTrackedMediaRequest" was null or undefined when calling deleteTrackedMedia().'
             );
         }
 
@@ -100,22 +109,22 @@ export class MediaProgressControllerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters['requestBody'],
+            body: DeleteTrackedMediaRequestToJSON(requestParameters['deleteTrackedMediaRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => MessageResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async deleteTrackedMedia(requestParameters: DeleteTrackedMediaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: string; }> {
+    async deleteTrackedMedia(requestParameters: DeleteTrackedMediaOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MessageResponse> {
         const response = await this.deleteTrackedMediaRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async requestMediaMergeRaw(requestParameters: RequestMediaMergeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: string; }>> {
+    async requestMediaMergeRaw(requestParameters: RequestMediaMergeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MessageResponse>> {
         if (requestParameters['mediaMergeRequest'] == null) {
             throw new runtime.RequiredError(
                 'mediaMergeRequest',
@@ -140,12 +149,12 @@ export class MediaProgressControllerApi extends runtime.BaseAPI {
             body: MediaMergeRequestToJSON(requestParameters['mediaMergeRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => MessageResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async requestMediaMerge(requestParameters: RequestMediaMergeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: string; }> {
+    async requestMediaMerge(requestParameters: RequestMediaMergeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MessageResponse> {
         const response = await this.requestMediaMergeRaw(requestParameters, initOverrides);
         return await response.value();
     }

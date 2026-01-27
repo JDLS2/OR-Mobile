@@ -14,26 +14,49 @@
 
 
 import * as runtime from '../runtime';
+import type {
+  EmailLoginRequest,
+  LoginRequest,
+  RegisterRequest,
+  ResetPasswordRequest,
+  SendEmailLoginLinkRequest,
+} from '../models/index';
+import {
+    EmailLoginRequestFromJSON,
+    EmailLoginRequestToJSON,
+    LoginRequestFromJSON,
+    LoginRequestToJSON,
+    RegisterRequestFromJSON,
+    RegisterRequestToJSON,
+    ResetPasswordRequestFromJSON,
+    ResetPasswordRequestToJSON,
+    SendEmailLoginLinkRequestFromJSON,
+    SendEmailLoginLinkRequestToJSON,
+} from '../models/index';
 
-export interface LoginRequest {
-    requestBody: { [key: string]: string; };
+export interface AdminLoginRequest {
+    loginRequest: LoginRequest;
+}
+
+export interface LoginOperationRequest {
+    loginRequest: LoginRequest;
 }
 
 export interface LoginViaEmailLinkRequest {
-    requestBody: { [key: string]: string; };
+    emailLoginRequest: EmailLoginRequest;
 }
 
-export interface RegisterRequest {
-    requestBody: { [key: string]: string; };
+export interface RegisterOperationRequest {
+    registerRequest: RegisterRequest;
 }
 
-export interface ResetPasswordRequest {
-    requestBody: { [key: string]: string; };
+export interface ResetPasswordOperationRequest {
+    resetPasswordRequest: ResetPasswordRequest;
     authorization?: string;
 }
 
-export interface SendEmailLoginLinkRequest {
-    requestBody: { [key: string]: string; };
+export interface SendEmailLoginLinkOperationRequest {
+    sendEmailLoginLinkRequest: SendEmailLoginLinkRequest;
 }
 
 export interface ValidateTokenRequest {
@@ -47,11 +70,48 @@ export class AuthControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async loginRaw(requestParameters: LoginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['requestBody'] == null) {
+    async adminLoginRaw(requestParameters: AdminLoginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters['loginRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestBody',
-                'Required parameter "requestBody" was null or undefined when calling login().'
+                'loginRequest',
+                'Required parameter "loginRequest" was null or undefined when calling adminLogin().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/auth/admin/login`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: LoginRequestToJSON(requestParameters['loginRequest']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     */
+    async adminLogin(requestParameters: AdminLoginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+        const response = await this.adminLoginRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async loginRaw(requestParameters: LoginOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters['loginRequest'] == null) {
+            throw new runtime.RequiredError(
+                'loginRequest',
+                'Required parameter "loginRequest" was null or undefined when calling login().'
             );
         }
 
@@ -69,7 +129,7 @@ export class AuthControllerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters['requestBody'],
+            body: LoginRequestToJSON(requestParameters['loginRequest']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -77,7 +137,7 @@ export class AuthControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async login(requestParameters: LoginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async login(requestParameters: LoginOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.loginRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -85,10 +145,10 @@ export class AuthControllerApi extends runtime.BaseAPI {
     /**
      */
     async loginViaEmailLinkRaw(requestParameters: LoginViaEmailLinkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['requestBody'] == null) {
+        if (requestParameters['emailLoginRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestBody',
-                'Required parameter "requestBody" was null or undefined when calling loginViaEmailLink().'
+                'emailLoginRequest',
+                'Required parameter "emailLoginRequest" was null or undefined when calling loginViaEmailLink().'
             );
         }
 
@@ -106,7 +166,7 @@ export class AuthControllerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters['requestBody'],
+            body: EmailLoginRequestToJSON(requestParameters['emailLoginRequest']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -121,11 +181,11 @@ export class AuthControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async registerRaw(requestParameters: RegisterRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['requestBody'] == null) {
+    async registerRaw(requestParameters: RegisterOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters['registerRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestBody',
-                'Required parameter "requestBody" was null or undefined when calling register().'
+                'registerRequest',
+                'Required parameter "registerRequest" was null or undefined when calling register().'
             );
         }
 
@@ -143,7 +203,7 @@ export class AuthControllerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters['requestBody'],
+            body: RegisterRequestToJSON(requestParameters['registerRequest']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -151,18 +211,18 @@ export class AuthControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async register(requestParameters: RegisterRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async register(requestParameters: RegisterOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.registerRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async resetPasswordRaw(requestParameters: ResetPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['requestBody'] == null) {
+    async resetPasswordRaw(requestParameters: ResetPasswordOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters['resetPasswordRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestBody',
-                'Required parameter "requestBody" was null or undefined when calling resetPassword().'
+                'resetPasswordRequest',
+                'Required parameter "resetPasswordRequest" was null or undefined when calling resetPassword().'
             );
         }
 
@@ -184,7 +244,7 @@ export class AuthControllerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters['requestBody'],
+            body: ResetPasswordRequestToJSON(requestParameters['resetPasswordRequest']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -192,18 +252,18 @@ export class AuthControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async resetPassword(requestParameters: ResetPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async resetPassword(requestParameters: ResetPasswordOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.resetPasswordRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async sendEmailLoginLinkRaw(requestParameters: SendEmailLoginLinkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['requestBody'] == null) {
+    async sendEmailLoginLinkRaw(requestParameters: SendEmailLoginLinkOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters['sendEmailLoginLinkRequest'] == null) {
             throw new runtime.RequiredError(
-                'requestBody',
-                'Required parameter "requestBody" was null or undefined when calling sendEmailLoginLink().'
+                'sendEmailLoginLinkRequest',
+                'Required parameter "sendEmailLoginLinkRequest" was null or undefined when calling sendEmailLoginLink().'
             );
         }
 
@@ -221,7 +281,7 @@ export class AuthControllerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters['requestBody'],
+            body: SendEmailLoginLinkRequestToJSON(requestParameters['sendEmailLoginLinkRequest']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -229,7 +289,7 @@ export class AuthControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async sendEmailLoginLink(requestParameters: SendEmailLoginLinkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async sendEmailLoginLink(requestParameters: SendEmailLoginLinkOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.sendEmailLoginLinkRaw(requestParameters, initOverrides);
         return await response.value();
     }

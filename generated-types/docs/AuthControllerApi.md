@@ -4,18 +4,19 @@ All URIs are relative to *http://localhost:8080*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
-| [**login**](AuthControllerApi.md#login) | **POST** /auth/login |  |
+| [**adminLogin**](AuthControllerApi.md#adminlogin) | **POST** /auth/admin/login |  |
+| [**login**](AuthControllerApi.md#loginoperation) | **POST** /auth/login |  |
 | [**loginViaEmailLink**](AuthControllerApi.md#loginviaemaillink) | **POST** /auth/loginViaEmailLink |  |
-| [**register**](AuthControllerApi.md#register) | **POST** /auth/register |  |
-| [**resetPassword**](AuthControllerApi.md#resetpassword) | **POST** /auth/resetPassword |  |
-| [**sendEmailLoginLink**](AuthControllerApi.md#sendemailloginlink) | **POST** /auth/sendEmailLoginLink |  |
+| [**register**](AuthControllerApi.md#registeroperation) | **POST** /auth/register |  |
+| [**resetPassword**](AuthControllerApi.md#resetpasswordoperation) | **POST** /auth/resetPassword |  |
+| [**sendEmailLoginLink**](AuthControllerApi.md#sendemailloginlinkoperation) | **POST** /auth/sendEmailLoginLink |  |
 | [**validateToken**](AuthControllerApi.md#validatetoken) | **POST** /auth/validate |  |
 
 
 
-## login
+## adminLogin
 
-> object login(requestBody)
+> object adminLogin(loginRequest)
 
 
 
@@ -26,16 +27,81 @@ import {
   Configuration,
   AuthControllerApi,
 } from '';
-import type { LoginRequest } from '';
+import type { AdminLoginRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
   const api = new AuthControllerApi();
 
   const body = {
-    // { [key: string]: string; }
-    requestBody: ...,
-  } satisfies LoginRequest;
+    // LoginRequest
+    loginRequest: ...,
+  } satisfies AdminLoginRequest;
+
+  try {
+    const data = await api.adminLogin(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **loginRequest** | [LoginRequest](LoginRequest.md) |  | |
+
+### Return type
+
+**object**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
+- **Accept**: `*/*`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | OK |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## login
+
+> object login(loginRequest)
+
+
+
+### Example
+
+```ts
+import {
+  Configuration,
+  AuthControllerApi,
+} from '';
+import type { LoginOperationRequest } from '';
+
+async function example() {
+  console.log("🚀 Testing  SDK...");
+  const api = new AuthControllerApi();
+
+  const body = {
+    // LoginRequest
+    loginRequest: ...,
+  } satisfies LoginOperationRequest;
 
   try {
     const data = await api.login(body);
@@ -54,7 +120,7 @@ example().catch(console.error);
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **requestBody** | `{ [key: string]: string; }` |  | |
+| **loginRequest** | [LoginRequest](LoginRequest.md) |  | |
 
 ### Return type
 
@@ -80,7 +146,7 @@ No authorization required
 
 ## loginViaEmailLink
 
-> object loginViaEmailLink(requestBody)
+> object loginViaEmailLink(emailLoginRequest)
 
 
 
@@ -98,8 +164,8 @@ async function example() {
   const api = new AuthControllerApi();
 
   const body = {
-    // { [key: string]: string; }
-    requestBody: ...,
+    // EmailLoginRequest
+    emailLoginRequest: ...,
   } satisfies LoginViaEmailLinkRequest;
 
   try {
@@ -119,7 +185,7 @@ example().catch(console.error);
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **requestBody** | `{ [key: string]: string; }` |  | |
+| **emailLoginRequest** | [EmailLoginRequest](EmailLoginRequest.md) |  | |
 
 ### Return type
 
@@ -145,7 +211,7 @@ No authorization required
 
 ## register
 
-> object register(requestBody)
+> object register(registerRequest)
 
 
 
@@ -156,16 +222,16 @@ import {
   Configuration,
   AuthControllerApi,
 } from '';
-import type { RegisterRequest } from '';
+import type { RegisterOperationRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
   const api = new AuthControllerApi();
 
   const body = {
-    // { [key: string]: string; }
-    requestBody: ...,
-  } satisfies RegisterRequest;
+    // RegisterRequest
+    registerRequest: ...,
+  } satisfies RegisterOperationRequest;
 
   try {
     const data = await api.register(body);
@@ -184,7 +250,7 @@ example().catch(console.error);
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **requestBody** | `{ [key: string]: string; }` |  | |
+| **registerRequest** | [RegisterRequest](RegisterRequest.md) |  | |
 
 ### Return type
 
@@ -210,7 +276,7 @@ No authorization required
 
 ## resetPassword
 
-> object resetPassword(requestBody, authorization)
+> object resetPassword(resetPasswordRequest, authorization)
 
 
 
@@ -221,18 +287,18 @@ import {
   Configuration,
   AuthControllerApi,
 } from '';
-import type { ResetPasswordRequest } from '';
+import type { ResetPasswordOperationRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
   const api = new AuthControllerApi();
 
   const body = {
-    // { [key: string]: string; }
-    requestBody: ...,
+    // ResetPasswordRequest
+    resetPasswordRequest: ...,
     // string (optional)
     authorization: authorization_example,
-  } satisfies ResetPasswordRequest;
+  } satisfies ResetPasswordOperationRequest;
 
   try {
     const data = await api.resetPassword(body);
@@ -251,7 +317,7 @@ example().catch(console.error);
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **requestBody** | `{ [key: string]: string; }` |  | |
+| **resetPasswordRequest** | [ResetPasswordRequest](ResetPasswordRequest.md) |  | |
 | **authorization** | `string` |  | [Optional] [Defaults to `undefined`] |
 
 ### Return type
@@ -278,7 +344,7 @@ No authorization required
 
 ## sendEmailLoginLink
 
-> object sendEmailLoginLink(requestBody)
+> object sendEmailLoginLink(sendEmailLoginLinkRequest)
 
 
 
@@ -289,16 +355,16 @@ import {
   Configuration,
   AuthControllerApi,
 } from '';
-import type { SendEmailLoginLinkRequest } from '';
+import type { SendEmailLoginLinkOperationRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
   const api = new AuthControllerApi();
 
   const body = {
-    // { [key: string]: string; }
-    requestBody: ...,
-  } satisfies SendEmailLoginLinkRequest;
+    // SendEmailLoginLinkRequest
+    sendEmailLoginLinkRequest: ...,
+  } satisfies SendEmailLoginLinkOperationRequest;
 
   try {
     const data = await api.sendEmailLoginLink(body);
@@ -317,7 +383,7 @@ example().catch(console.error);
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **requestBody** | `{ [key: string]: string; }` |  | |
+| **sendEmailLoginLinkRequest** | [SendEmailLoginLinkRequest](SendEmailLoginLinkRequest.md) |  | |
 
 ### Return type
 

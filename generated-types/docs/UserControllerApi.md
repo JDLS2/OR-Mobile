@@ -11,7 +11,7 @@ All URIs are relative to *http://localhost:8080*
 
 ## addNewUser
 
-> string addNewUser(requestBody)
+> string addNewUser(addUserRequest)
 
 
 
@@ -29,8 +29,8 @@ async function example() {
   const api = new UserControllerApi();
 
   const body = {
-    // { [key: string]: string; }
-    requestBody: ...,
+    // AddUserRequest
+    addUserRequest: ...,
   } satisfies AddNewUserRequest;
 
   try {
@@ -50,7 +50,7 @@ example().catch(console.error);
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **requestBody** | `{ [key: string]: string; }` |  | |
+| **addUserRequest** | [AddUserRequest](AddUserRequest.md) |  | |
 
 ### Return type
 

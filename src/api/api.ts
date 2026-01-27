@@ -6,11 +6,30 @@ import {
   AuthResponse,
   MediaWithProgressDto,
   MediaWithProgressesAndSitesDto,
-  MediaProgressRequest,
+  MediaProgressUserRequest,
   UserProgressAnalytics,
   MessageResponse,
   ValidateResponse,
   SubmitUrlResponse,
+  // Request types
+  LoginRequest,
+  RegisterRequest,
+  EmailLoginRequest,
+  ResetPasswordRequest,
+  SendEmailLoginLinkRequest,
+  AddMediaProgressRequest,
+  DeleteTrackedMediaRequest,
+  MediaMergeRequest,
+  MediaProgressId,
+  // ToJSON serializers
+  LoginRequestToJSON,
+  RegisterRequestToJSON,
+  EmailLoginRequestToJSON,
+  ResetPasswordRequestToJSON,
+  SendEmailLoginLinkRequestToJSON,
+  AddMediaProgressRequestToJSON,
+  DeleteTrackedMediaRequestToJSON,
+  MediaMergeRequestToJSON,
 } from '../types';
 
 // API base URL configuration
@@ -99,40 +118,49 @@ async function apiRequest<T>(
 
 export const api = {
   // Auth endpoints
-  login: (email: string, password: string) =>
-    apiRequest<AuthResponse>('/auth/login', {
+  login: (email: string, password: string) => {
+    const request: LoginRequest = {email, password};
+    return apiRequest<AuthResponse>('/auth/login', {
       method: 'POST',
-      body: JSON.stringify({email, password}),
-    }),
+      body: JSON.stringify(LoginRequestToJSON(request)),
+    });
+  },
 
-  signup: (email: string, password: string) =>
-    apiRequest<MessageResponse>('/auth/register', {
+  signup: (email: string, password: string) => {
+    const request: RegisterRequest = {email, password};
+    return apiRequest<MessageResponse>('/auth/register', {
       method: 'POST',
-      body: JSON.stringify({email, password}),
-    }),
+      body: JSON.stringify(RegisterRequestToJSON(request)),
+    });
+  },
 
   validateAuth: () =>
     apiRequest<ValidateResponse>('/auth/validate', {
       method: 'POST',
     }),
 
-  sendEmailLoginLink: (email: string) =>
-    apiRequest<MessageResponse>('/auth/sendEmailLoginLink', {
+  sendEmailLoginLink: (email: string) => {
+    const request: SendEmailLoginLinkRequest = {email};
+    return apiRequest<MessageResponse>('/auth/sendEmailLoginLink', {
       method: 'POST',
-      body: JSON.stringify({email}),
-    }),
+      body: JSON.stringify(SendEmailLoginLinkRequestToJSON(request)),
+    });
+  },
 
-  emailLogin: (token: string) =>
-    apiRequest<AuthResponse>('/auth/loginViaEmailLink', {
+  emailLogin: (token: string) => {
+    const request: EmailLoginRequest = {loginToken: token};
+    return apiRequest<AuthResponse>('/auth/loginViaEmailLink', {
       method: 'POST',
-      body: JSON.stringify({login_token: token}),
-    }),
+      body: JSON.stringify(EmailLoginRequestToJSON(request)),
+    });
+  },
 
-  resetPassword: async (new_password: string) => {
+  resetPassword: async (newPassword: string) => {
     const token = await storage.getToken();
+    const request: ResetPasswordRequest = {newPassword};
     return apiRequest<MessageResponse>('/auth/resetPassword', {
       method: 'POST',
-      body: JSON.stringify({new_password}),
+      body: JSON.stringify(ResetPasswordRequestToJSON(request)),
       headers: {
         ...(token && {Authorization: `Bearer ${token}`}),
       },
@@ -146,29 +174,38 @@ export const api = {
     apiRequest<MediaWithProgressesAndSitesDto>(`/medias/${mediaId}`),
 
   // URL submission
-  submitUrl: (url: string) =>
-    apiRequest<SubmitUrlResponse>('/mediaProgresses/mediaProgress', {
+  submitUrl: (url: string) => {
+    const request: AddMediaProgressRequest = {
+      providedUrl: url,
+      requestSource: 'Mobile-App',
+    };
+    return apiRequest<SubmitUrlResponse>('/mediaProgresses/mediaProgress', {
       method: 'POST',
-      body: JSON.stringify({provided_url: url, requestSource: 'Mobile-App'}),
-    }),
+      body: JSON.stringify(AddMediaProgressRequestToJSON(request)),
+    });
+  },
 
   // Media progress merge
-  requestMediaMerge: (mediaProgressId: string) =>
-    apiRequest<MessageResponse>('/mediaProgresses/requestMediaMerge', {
+  requestMediaMerge: (mediaProgressId: MediaProgressId) => {
+    const request: MediaMergeRequest = {mediaProgressToMergeID: mediaProgressId};
+    return apiRequest<MessageResponse>('/mediaProgresses/requestMediaMerge', {
       method: 'POST',
-      body: JSON.stringify({mediaProgressToMergeID: mediaProgressId}),
-    }),
+      body: JSON.stringify(MediaMergeRequestToJSON(request)),
+    });
+  },
 
   // Delete tracked media
-  deleteTrackedMedia: (mediaId: string) =>
-    apiRequest<MessageResponse>('/mediaProgresses/deleteTrackedMedia', {
+  deleteTrackedMedia: (mediaId: number) => {
+    const request: DeleteTrackedMediaRequest = {mediaId};
+    return apiRequest<MessageResponse>('/mediaProgresses/deleteTrackedMedia', {
       method: 'POST',
-      body: JSON.stringify({media_id: mediaId}),
-    }),
+      body: JSON.stringify(DeleteTrackedMediaRequestToJSON(request)),
+    });
+  },
 
   // Media progress requests
   getMediaProgressUserRequests: () =>
-    apiRequest<MediaProgressRequest[]>('/mediaProgressUserRequests'),
+    apiRequest<MediaProgressUserRequest[]>('/mediaProgressUserRequests'),
 
   retryProgressRequests: async () => {
     const token = await storage.getToken();

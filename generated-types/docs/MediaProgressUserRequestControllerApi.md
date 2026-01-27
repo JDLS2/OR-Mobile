@@ -68,7 +68,7 @@ No authorization required
 
 ## retryProgressRequests
 
-> { [key: string]: string; } retryProgressRequests()
+> MessageResponse retryProgressRequests()
 
 
 
@@ -103,7 +103,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-**{ [key: string]: string; }**
+[**MessageResponse**](MessageResponse.md)
 
 ### Authorization
 

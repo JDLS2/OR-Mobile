@@ -14,6 +14,13 @@
 
 
 import * as runtime from '../runtime';
+import type {
+  MessageResponse,
+} from '../models/index';
+import {
+    MessageResponseFromJSON,
+    MessageResponseToJSON,
+} from '../models/index';
 
 /**
  * 
@@ -49,7 +56,7 @@ export class MediaProgressUserRequestControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async retryProgressRequestsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: string; }>> {
+    async retryProgressRequestsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MessageResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -64,12 +71,12 @@ export class MediaProgressUserRequestControllerApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => MessageResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async retryProgressRequests(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: string; }> {
+    async retryProgressRequests(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MessageResponse> {
         const response = await this.retryProgressRequestsRaw(initOverrides);
         return await response.value();
     }

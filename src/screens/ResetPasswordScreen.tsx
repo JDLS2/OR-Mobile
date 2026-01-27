@@ -51,7 +51,7 @@ export function ResetPasswordScreen() {
       Toast.show({
         type: 'success',
         text1: 'Password Reset Successful',
-        text2: data.message || 'Your password has been updated',
+        text2: data.body || 'Your password has been updated',
       });
       navigation.goBack();
     }

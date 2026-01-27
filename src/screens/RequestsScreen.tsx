@@ -12,7 +12,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import {api} from '../api/api';
 import {Badge, LoadingSpinner, EmptyState, ScreenHeader} from '../components';
-import {MediaProgressRequest} from '../types';
+import {MediaProgressUserRequest} from '../types';
 
 enum RequestViewType {
   Overview = 'Overview',
@@ -29,7 +29,7 @@ const VIEW_TYPES = [
 ];
 
 export function RequestsScreen() {
-  const [requests, setRequests] = useState<MediaProgressRequest[]>([]);
+  const [requests, setRequests] = useState<MediaProgressUserRequest[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);
@@ -141,7 +141,7 @@ export function RequestsScreen() {
     </View>
   );
 
-  const renderRequestItem = ({item}: {item: MediaProgressRequest}) => (
+  const renderRequestItem = ({item}: {item: MediaProgressUserRequest}) => (
     <TouchableOpacity
       style={styles.requestItem}
       onPress={() => item.url && Linking.openURL(item.url)}>

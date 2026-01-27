@@ -11,7 +11,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
 import {api} from '../api/api';
 import {MediaCard, LoadingSpinner, EmptyState, ScreenHeader} from '../components';
-import {MediaWithProgressDto} from '../types';
+import {MediaWithProgressDto, MediaProgressId, MediaProgressDto} from '../types';
 
 type RootStackParamList = {
   MediaDetails: {mediaId: string};
@@ -58,7 +58,7 @@ export function DashboardScreen() {
     navigation.navigate('MediaDetails', {mediaId});
   };
 
-  const handleMerge = (mediaProgress: any) => {
+  const handleMerge = (mediaProgress: MediaProgressDto) => {
     Alert.alert(
       'Merge Media',
       'What this will do: detect if there\'s another media you are reading that matches this. If we detect it, we will combine those two media. All chapters will then be tracked under 1 Media.\n\nContinue?',
@@ -70,7 +70,11 @@ export function DashboardScreen() {
         {
           text: 'Yes',
           onPress: async () => {
-            const {data, error} = await api.requestMediaMerge(String(mediaProgress.mediaId));
+            const mediaProgressId: MediaProgressId = {
+              userId: mediaProgress.userId,
+              recentChapterUrl: mediaProgress.recentChapterUrl,
+            };
+            const {data, error} = await api.requestMediaMerge(mediaProgressId);
 
             if (error) {
               Toast.show({
@@ -82,7 +86,7 @@ export function DashboardScreen() {
               Toast.show({
                 type: 'success',
                 text1: 'Merge Request Submitted',
-                text2: data.message || 'Merge request successful',
+                text2: data.body || 'Merge request successful',
               });
               loadRecentMedia(false);
             }

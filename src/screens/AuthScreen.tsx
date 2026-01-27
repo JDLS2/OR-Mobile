@@ -79,7 +79,7 @@ export function AuthScreen() {
       Toast.show({
         type: 'success',
         text1: 'Login Email Sent',
-        text2: data.message || 'Check your inbox for a login link',
+        text2: data.body || 'Check your inbox for a login link',
       });
       setShowEmailLogin(false);
       setEmailLoginAddress('');

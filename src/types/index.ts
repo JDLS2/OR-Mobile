@@ -1,6 +1,6 @@
-// TypeScript type definitions for the Ni-RE Mobile app
+// TypeScript type definitions for the One Read Mobile app
 
-// Re-export generated DTO types
+// Re-export generated DTO types (responses)
 export {
   MediaDto,
   MediaProgressDto,
@@ -8,6 +8,32 @@ export {
   MediaWithProgressesAndSitesDto,
   MediaSiteWithMediaUrlDto,
   MediaSiteDto,
+  MediaProgressId,
+  UserDto,
+  // Generated MessageResponse with body/error fields
+  MessageResponse,
+} from '../../generated-types/models';
+
+// Re-export generated request types and their serializers
+export {
+  // Request types
+  LoginRequest,
+  RegisterRequest,
+  EmailLoginRequest,
+  ResetPasswordRequest,
+  SendEmailLoginLinkRequest,
+  AddMediaProgressRequest,
+  DeleteTrackedMediaRequest,
+  MediaMergeRequest,
+  // ToJSON serializers (handle snake_case conversion for backend)
+  LoginRequestToJSON,
+  RegisterRequestToJSON,
+  EmailLoginRequestToJSON,
+  ResetPasswordRequestToJSON,
+  SendEmailLoginLinkRequestToJSON,
+  AddMediaProgressRequestToJSON,
+  DeleteTrackedMediaRequestToJSON,
+  MediaMergeRequestToJSON,
 } from '../../generated-types/models';
 
 export interface User {
@@ -16,7 +42,7 @@ export interface User {
   username: string;
 }
 
-export interface MediaProgressRequest {
+export interface MediaProgressUserRequest {
   id: string;
   url: string;
   createdAt: string;
@@ -53,10 +79,6 @@ export interface ApiResponse<T> {
 export interface AuthResponse {
   token: string;
   user: User;
-}
-
-export interface MessageResponse {
-  message: string;
 }
 
 export interface ValidateResponse {

@@ -5,14 +5,14 @@ All URIs are relative to *http://localhost:8080*
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
 | [**addNewMediaProgress**](MediaProgressControllerApi.md#addnewmediaprogress) | **POST** /mediaProgresses/mediaProgress |  |
-| [**deleteTrackedMedia**](MediaProgressControllerApi.md#deletetrackedmedia) | **POST** /mediaProgresses/deleteTrackedMedia |  |
+| [**deleteTrackedMedia**](MediaProgressControllerApi.md#deletetrackedmediaoperation) | **POST** /mediaProgresses/deleteTrackedMedia |  |
 | [**requestMediaMerge**](MediaProgressControllerApi.md#requestmediamerge) | **POST** /mediaProgresses/requestMediaMerge |  |
 
 
 
 ## addNewMediaProgress
 
-> { [key: string]: string; } addNewMediaProgress(requestBody)
+> MessageResponse addNewMediaProgress(addMediaProgressRequest)
 
 
 
@@ -30,8 +30,8 @@ async function example() {
   const api = new MediaProgressControllerApi();
 
   const body = {
-    // { [key: string]: string; }
-    requestBody: ...,
+    // AddMediaProgressRequest
+    addMediaProgressRequest: ...,
   } satisfies AddNewMediaProgressRequest;
 
   try {
@@ -51,11 +51,11 @@ example().catch(console.error);
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **requestBody** | `{ [key: string]: string; }` |  | |
+| **addMediaProgressRequest** | [AddMediaProgressRequest](AddMediaProgressRequest.md) |  | |
 
 ### Return type
 
-**{ [key: string]: string; }**
+[**MessageResponse**](MessageResponse.md)
 
 ### Authorization
 
@@ -77,7 +77,7 @@ No authorization required
 
 ## deleteTrackedMedia
 
-> { [key: string]: string; } deleteTrackedMedia(requestBody)
+> MessageResponse deleteTrackedMedia(deleteTrackedMediaRequest)
 
 
 
@@ -88,16 +88,16 @@ import {
   Configuration,
   MediaProgressControllerApi,
 } from '';
-import type { DeleteTrackedMediaRequest } from '';
+import type { DeleteTrackedMediaOperationRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
   const api = new MediaProgressControllerApi();
 
   const body = {
-    // { [key: string]: number; }
-    requestBody: ...,
-  } satisfies DeleteTrackedMediaRequest;
+    // DeleteTrackedMediaRequest
+    deleteTrackedMediaRequest: ...,
+  } satisfies DeleteTrackedMediaOperationRequest;
 
   try {
     const data = await api.deleteTrackedMedia(body);
@@ -116,11 +116,11 @@ example().catch(console.error);
 
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
-| **requestBody** | `{ [key: string]: number; }` |  | |
+| **deleteTrackedMediaRequest** | [DeleteTrackedMediaRequest](DeleteTrackedMediaRequest.md) |  | |
 
 ### Return type
 
-**{ [key: string]: string; }**
+[**MessageResponse**](MessageResponse.md)
 
 ### Authorization
 
@@ -142,7 +142,7 @@ No authorization required
 
 ## requestMediaMerge
 
-> { [key: string]: string; } requestMediaMerge(mediaMergeRequest)
+> MessageResponse requestMediaMerge(mediaMergeRequest)
 
 
 
@@ -185,7 +185,7 @@ example().catch(console.error);
 
 ### Return type
 
-**{ [key: string]: string; }**
+[**MessageResponse**](MessageResponse.md)
 
 ### Authorization
 
