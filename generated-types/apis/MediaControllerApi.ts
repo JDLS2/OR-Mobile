@@ -39,6 +39,33 @@ export class MediaControllerApi extends runtime.BaseAPI {
 
     /**
      */
+    async getAllMediaRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<MediaDto>>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/medias/allMedia`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(MediaDtoFromJSON));
+    }
+
+    /**
+     */
+    async getAllMedia(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<MediaDto>> {
+        const response = await this.getAllMediaRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
     async getMediaRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<MediaDto>>> {
         const queryParameters: any = {};
 

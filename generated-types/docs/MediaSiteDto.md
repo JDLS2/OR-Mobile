@@ -9,6 +9,7 @@ Name | Type
 `id` | number
 `siteName` | string
 `urlPrefix` | string
+`siteStatus` | string
 `primarySource` | boolean
 
 ## Example
@@ -21,6 +22,7 @@ const example = {
   "id": null,
   "siteName": null,
   "urlPrefix": null,
+  "siteStatus": null,
   "primarySource": null,
 } satisfies MediaSiteDto
 

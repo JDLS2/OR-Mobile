@@ -39,11 +39,31 @@ export interface MediaSiteDto {
     urlPrefix?: string;
     /**
      * 
+     * @type {string}
+     * @memberof MediaSiteDto
+     */
+    siteStatus?: MediaSiteDtoSiteStatusEnum;
+    /**
+     * 
      * @type {boolean}
      * @memberof MediaSiteDto
      */
     primarySource?: boolean;
 }
+
+
+/**
+ * @export
+ */
+export const MediaSiteDtoSiteStatusEnum = {
+    NotReviewed: 'NOT_REVIEWED',
+    Approved: 'APPROVED',
+    Denied: 'DENIED',
+    Banned: 'BANNED',
+    Ineligible: 'INELIGIBLE'
+} as const;
+export type MediaSiteDtoSiteStatusEnum = typeof MediaSiteDtoSiteStatusEnum[keyof typeof MediaSiteDtoSiteStatusEnum];
+
 
 /**
  * Check if a given object implements the MediaSiteDto interface.
@@ -65,6 +85,7 @@ export function MediaSiteDtoFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'id': json['id'] == null ? undefined : json['id'],
         'siteName': json['siteName'] == null ? undefined : json['siteName'],
         'urlPrefix': json['urlPrefix'] == null ? undefined : json['urlPrefix'],
+        'siteStatus': json['siteStatus'] == null ? undefined : json['siteStatus'],
         'primarySource': json['primarySource'] == null ? undefined : json['primarySource'],
     };
 }
@@ -83,6 +104,7 @@ export function MediaSiteDtoToJSONTyped(value?: MediaSiteDto | null, ignoreDiscr
         'id': value['id'],
         'siteName': value['siteName'],
         'urlPrefix': value['urlPrefix'],
+        'siteStatus': value['siteStatus'],
         'primarySource': value['primarySource'],
     };
 }

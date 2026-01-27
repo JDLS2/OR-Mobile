@@ -18,6 +18,7 @@ import type {
   AddMediaProgressRequest,
   DeleteTrackedMediaRequest,
   MediaMergeRequest,
+  MediaProgressDto,
   MessageResponse,
 } from '../models/index';
 import {
@@ -27,12 +28,18 @@ import {
     DeleteTrackedMediaRequestToJSON,
     MediaMergeRequestFromJSON,
     MediaMergeRequestToJSON,
+    MediaProgressDtoFromJSON,
+    MediaProgressDtoToJSON,
     MessageResponseFromJSON,
     MessageResponseToJSON,
 } from '../models/index';
 
 export interface AddNewMediaProgressRequest {
     addMediaProgressRequest: AddMediaProgressRequest;
+}
+
+export interface DeleteMediaProgressRequest {
+    mediaProgressDto: MediaProgressDto;
 }
 
 export interface DeleteTrackedMediaOperationRequest {
@@ -82,6 +89,43 @@ export class MediaProgressControllerApi extends runtime.BaseAPI {
      */
     async addNewMediaProgress(requestParameters: AddNewMediaProgressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MessageResponse> {
         const response = await this.addNewMediaProgressRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async deleteMediaProgressRaw(requestParameters: DeleteMediaProgressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MessageResponse>> {
+        if (requestParameters['mediaProgressDto'] == null) {
+            throw new runtime.RequiredError(
+                'mediaProgressDto',
+                'Required parameter "mediaProgressDto" was null or undefined when calling deleteMediaProgress().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/mediaProgresses/deleteMediaProgress`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: MediaProgressDtoToJSON(requestParameters['mediaProgressDto']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => MessageResponseFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async deleteMediaProgress(requestParameters: DeleteMediaProgressRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MessageResponse> {
+        const response = await this.deleteMediaProgressRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

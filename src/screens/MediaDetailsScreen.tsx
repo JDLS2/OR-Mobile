@@ -37,6 +37,9 @@ export function MediaDetailsScreen() {
   const [showSourceModal, setShowSourceModal] = useState(false);
   const [showOpenUrlModal, setShowOpenUrlModal] = useState(false);
   const [pendingUrl, setPendingUrl] = useState<string | null>(null);
+  const [showChapterDeleteModal, setShowChapterDeleteModal] = useState(false);
+  const [selectedProgressToDelete, setSelectedProgressToDelete] = useState<MediaProgressDto | null>(null);
+  const [isDeletingChapter, setIsDeletingChapter] = useState(false);
 
   useEffect(() => {
     loadMediaDetails();
@@ -155,6 +158,42 @@ export function MediaDetailsScreen() {
     handleUrlSelect(url);
   };
 
+  const handleDeleteChapterPress = (progress: MediaProgressDto) => {
+    setSelectedProgressToDelete(progress);
+    setShowChapterDeleteModal(true);
+  };
+
+  const handleCancelChapterDelete = () => {
+    setShowChapterDeleteModal(false);
+    setSelectedProgressToDelete(null);
+  };
+
+  const handleConfirmChapterDelete = async () => {
+    if (!selectedProgressToDelete) return;
+
+    setIsDeletingChapter(true);
+    const {data, error, statusCode} = await api.deleteMediaProgress(selectedProgressToDelete);
+
+    if (error || !statusCode || statusCode < 200 || statusCode >= 300) {
+      Toast.show({
+        type: 'error',
+        text1: 'Deletion Failed',
+        text2: error || 'Failed to delete chapter progress',
+      });
+    } else {
+      Toast.show({
+        type: 'success',
+        text1: 'Chapter Deleted',
+        text2: data?.body || 'Successfully removed chapter progress',
+      });
+      loadMediaDetails();
+    }
+
+    setIsDeletingChapter(false);
+    setShowChapterDeleteModal(false);
+    setSelectedProgressToDelete(null);
+  };
+
   const getStatusBadgeVariant = (status: string) => {
     switch (status?.toUpperCase()) {
       case 'READ':
@@ -171,27 +210,34 @@ export function MediaDetailsScreen() {
   };
 
   const renderChapterItem = ({item}: {item: MediaProgressDto}) => (
-    <TouchableOpacity
-      style={styles.chapterItem}
-      onPress={() => item.recentChapterUrl && handleOpenChapter(item.recentChapterUrl)}
-      disabled={!item.recentChapterUrl}>
-      <View style={styles.chapterInfo}>
-        <Text style={[styles.chapterNumber, item.recentChapterUrl && styles.chapterLink]}>
-          Chapter {item.chapterNumber}
-          {item.recentChapterUrl && ' '}
-        </Text>
-        {item.lastUpdatedAt && (
-          <Text style={styles.chapterDate}>
-            Last updated: {new Date(item.lastUpdatedAt).toLocaleDateString()}
+    <View style={styles.chapterItemContainer}>
+      <TouchableOpacity
+        style={styles.deleteChapterButton}
+        onPress={() => handleDeleteChapterPress(item)}>
+        <Text style={styles.deleteChapterButtonText}>-</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.chapterItem}
+        onPress={() => item.recentChapterUrl && handleOpenChapter(item.recentChapterUrl)}
+        disabled={!item.recentChapterUrl}>
+        <View style={styles.chapterInfo}>
+          <Text style={[styles.chapterNumber, item.recentChapterUrl && styles.chapterLink]}>
+            Chapter {item.chapterNumber}
+            {item.recentChapterUrl && ' '}
           </Text>
-        )}
-      </View>
-      <View style={styles.chapterActions}>
-        <Badge variant={getStatusBadgeVariant(item.status || 'READ')}>
-          {item.status || 'Read'}
-        </Badge>
-      </View>
-    </TouchableOpacity>
+          {item.lastUpdatedAt && (
+            <Text style={styles.chapterDate}>
+              Last updated: {new Date(item.lastUpdatedAt).toLocaleDateString()}
+            </Text>
+          )}
+        </View>
+        <View style={styles.chapterActions}>
+          <Badge variant={getStatusBadgeVariant(item.status || 'READ')}>
+            {item.status || 'Read'}
+          </Badge>
+        </View>
+      </TouchableOpacity>
+    </View>
   );
 
   const media = mediaDetails?.media;
@@ -358,6 +404,37 @@ export function MediaDetailsScreen() {
           </View>
         </View>
       </Modal>
+
+      <Modal
+        visible={showChapterDeleteModal}
+        transparent
+        animationType="fade"
+        onRequestClose={handleCancelChapterDelete}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Delete Chapter Progress</Text>
+            <Text style={styles.modalMessage}>
+              Confirm delete for chapter {selectedProgressToDelete?.chapterNumber}?
+            </Text>
+            <View style={styles.chapterDeleteButtonsContainer}>
+              <TouchableOpacity
+                style={[styles.chapterDeleteCancelButton, isDeletingChapter && styles.buttonDisabled]}
+                onPress={handleCancelChapterDelete}
+                disabled={isDeletingChapter}>
+                <Text style={styles.chapterDeleteCancelButtonText}>No, cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.chapterDeleteConfirmButton, isDeletingChapter && styles.buttonDisabled]}
+                onPress={handleConfirmChapterDelete}
+                disabled={isDeletingChapter}>
+                <Text style={styles.chapterDeleteConfirmButtonText}>
+                  {isDeletingChapter ? 'Deleting...' : 'Yes, confirm'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -497,7 +574,27 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
   },
+  chapterItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  deleteChapterButton: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#dc2626',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  deleteChapterButtonText: {
+    color: '#ffffff',
+    fontSize: 20,
+    fontWeight: '700',
+    lineHeight: 22,
+  },
   chapterItem: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -615,5 +712,35 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     color: '#a1a1aa',
+  },
+  chapterDeleteButtonsContainer: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  chapterDeleteCancelButton: {
+    flex: 1,
+    backgroundColor: '#27272a',
+    borderRadius: 8,
+    paddingVertical: 14,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#3f3f46',
+  },
+  chapterDeleteCancelButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#a1a1aa',
+  },
+  chapterDeleteConfirmButton: {
+    flex: 1,
+    backgroundColor: '#dc2626',
+    borderRadius: 8,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  chapterDeleteConfirmButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#ffffff',
   },
 });

@@ -2,6 +2,7 @@ apis/AuthControllerApi.ts
 apis/MediaControllerApi.ts
 apis/MediaProgressControllerApi.ts
 apis/MediaProgressUserRequestControllerApi.ts
+apis/MediaSitesControllerApi.ts
 apis/ProgressAnalyticsControllerApi.ts
 apis/UserControllerApi.ts
 apis/index.ts
@@ -20,6 +21,7 @@ docs/MediaProgressId.md
 docs/MediaProgressUserRequestControllerApi.md
 docs/MediaSiteDto.md
 docs/MediaSiteWithMediaUrlDto.md
+docs/MediaSitesControllerApi.md
 docs/MediaWithProgressDto.md
 docs/MediaWithProgressesAndSitesDto.md
 docs/MessageResponse.md

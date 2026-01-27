@@ -34,6 +34,7 @@ export {
   AddMediaProgressRequestToJSON,
   DeleteTrackedMediaRequestToJSON,
   MediaMergeRequestToJSON,
+  MediaProgressDtoToJSON,
 } from '../../generated-types/models';
 
 export interface User {

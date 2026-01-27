@@ -21,6 +21,7 @@ import {
   DeleteTrackedMediaRequest,
   MediaMergeRequest,
   MediaProgressId,
+  MediaProgressDto,
   // ToJSON serializers
   LoginRequestToJSON,
   RegisterRequestToJSON,
@@ -200,6 +201,14 @@ export const api = {
     return apiRequest<MessageResponse>('/mediaProgresses/deleteTrackedMedia', {
       method: 'POST',
       body: JSON.stringify(DeleteTrackedMediaRequestToJSON(request)),
+    });
+  },
+
+  // Delete single media progress (chapter)
+  deleteMediaProgress: (mediaProgressDto: MediaProgressDto) => {
+    return apiRequest<MessageResponse>('/mediaProgresses/deleteMediaProgress', {
+      method: 'POST',
+      body: JSON.stringify(mediaProgressDto),
     });
   },
 

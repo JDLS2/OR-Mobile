@@ -39,10 +39,10 @@ export interface UserDto {
     roles?: Set<UserDtoRolesEnum>;
     /**
      * 
-     * @type {boolean}
+     * @type {string}
      * @memberof UserDto
      */
-    confirmedUser?: boolean;
+    userStatus?: UserDtoUserStatusEnum;
 }
 
 
@@ -54,6 +54,17 @@ export const UserDtoRolesEnum = {
     RoleAdmin: 'ROLE_ADMIN'
 } as const;
 export type UserDtoRolesEnum = typeof UserDtoRolesEnum[keyof typeof UserDtoRolesEnum];
+
+/**
+ * @export
+ */
+export const UserDtoUserStatusEnum = {
+    NotAuthenticated: 'NOT_AUTHENTICATED',
+    Authenticated: 'AUTHENTICATED',
+    Restricted: 'RESTRICTED',
+    Banned: 'BANNED'
+} as const;
+export type UserDtoUserStatusEnum = typeof UserDtoUserStatusEnum[keyof typeof UserDtoUserStatusEnum];
 
 
 /**
@@ -76,7 +87,7 @@ export function UserDtoFromJSONTyped(json: any, ignoreDiscriminator: boolean): U
         'id': json['id'] == null ? undefined : json['id'],
         'email': json['email'] == null ? undefined : json['email'],
         'roles': json['roles'] == null ? undefined : new Set(json['roles']),
-        'confirmedUser': json['confirmedUser'] == null ? undefined : json['confirmedUser'],
+        'userStatus': json['userStatus'] == null ? undefined : json['userStatus'],
     };
 }
 
@@ -94,7 +105,7 @@ export function UserDtoToJSONTyped(value?: UserDto | null, ignoreDiscriminator: 
         'id': value['id'],
         'email': value['email'],
         'roles': value['roles'] == null ? undefined : Array.from(value['roles'] as Set<any>),
-        'confirmedUser': value['confirmedUser'],
+        'userStatus': value['userStatus'],
     };
 }
 

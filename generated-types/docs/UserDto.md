@@ -9,7 +9,7 @@ Name | Type
 `id` | number
 `email` | string
 `roles` | Set&lt;string&gt;
-`confirmedUser` | boolean
+`userStatus` | string
 
 ## Example
 
@@ -21,7 +21,7 @@ const example = {
   "id": null,
   "email": null,
   "roles": null,
-  "confirmedUser": null,
+  "userStatus": null,
 } satisfies UserDto
 
 console.log(example)
