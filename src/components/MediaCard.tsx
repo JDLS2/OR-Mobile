@@ -32,6 +32,7 @@ export function MediaCard({
   chaptersRead,
   lastRead,
   status = 'Reading',
+  type,
   onPress,
   onMerge,
   showMergeButton = false,
@@ -55,7 +56,9 @@ export function MediaCard({
           />
         ) : (
           <View style={styles.placeholderImage}>
-            <Text style={styles.placeholderText}>No Image</Text>
+            <Text style={styles.placeholderText}>
+              {type?.toUpperCase() || 'MEDIA'}
+            </Text>
           </View>
         )}
         <View style={styles.badgeContainer}>
@@ -114,10 +117,13 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#000000',
   },
   placeholderText: {
-    color: '#71717a',
-    fontSize: 12,
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '700',
+    textAlign: 'center',
   },
   badgeContainer: {
     position: 'absolute',

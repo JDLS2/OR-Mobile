@@ -280,7 +280,9 @@ export function MediaDetailsScreen() {
               />
             ) : (
               <View style={styles.placeholderCover}>
-                <Text style={styles.placeholderText}>No Image</Text>
+                <Text style={styles.placeholderText}>
+                  {media?.type?.toUpperCase() || 'MEDIA'}
+                </Text>
               </View>
             )}
           </View>
@@ -497,9 +499,13 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#000000',
   },
   placeholderText: {
-    color: '#71717a',
+    color: '#ffffff',
+    fontSize: 24,
+    fontWeight: '700',
+    textAlign: 'center',
   },
   mediaInfo: {},
   titleRow: {

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   RefreshControl,
   Alert,
+  TextInput,
 } from 'react-native';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -22,6 +23,11 @@ export function DashboardScreen() {
   const [recentMedia, setRecentMedia] = useState<MediaWithProgressDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredMedia = recentMedia.filter(item =>
+    item.media?.title?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const loadRecentMedia = useCallback(async (showLoading = true) => {
     if (showLoading) {
@@ -122,6 +128,18 @@ export function DashboardScreen() {
         icon="H"
       />
 
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search media..."
+          placeholderTextColor="#71717a"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+      </View>
+
       {isLoading ? (
         <View style={styles.loadingContainer}>
           <LoadingSpinner />
@@ -131,9 +149,14 @@ export function DashboardScreen() {
           title="No recent media"
           message="Start reading to see your recent media here"
         />
+      ) : filteredMedia.length === 0 ? (
+        <EmptyState
+          title="No results found"
+          message={`No media matching "${searchQuery}"`}
+        />
       ) : (
         <FlatList
-          data={recentMedia}
+          data={filteredMedia}
           renderItem={renderItem}
           keyExtractor={item => String(item.media?.id)}
           numColumns={2}
@@ -158,6 +181,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0f0f0f',
+  },
+  searchContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+  },
+  searchInput: {
+    backgroundColor: '#1a1a1a',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#27272a',
   },
   loadingContainer: {
     flex: 1,
