@@ -50,8 +50,11 @@ export interface UserDto {
  * @export
  */
 export const UserDtoRolesEnum = {
-    RoleUser: 'ROLE_USER',
-    RoleAdmin: 'ROLE_ADMIN'
+    FreeUser: 'FREE_USER',
+    Admin: 'ADMIN',
+    Moderator: 'MODERATOR',
+    ProUser: 'PRO_USER',
+    PremiumUser: 'PREMIUM_USER'
 } as const;
 export type UserDtoRolesEnum = typeof UserDtoRolesEnum[keyof typeof UserDtoRolesEnum];
 

@@ -2,6 +2,7 @@
 /* eslint-disable */
 export * from './AddMediaProgressRequest';
 export * from './AddUserRequest';
+export * from './AddUserSubmissionRequest';
 export * from './DeleteTrackedMediaRequest';
 export * from './EmailLoginRequest';
 export * from './LoginRequest';

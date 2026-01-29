@@ -32,6 +32,10 @@ import {
   DeleteTrackedMediaRequestToJSON,
   MediaMergeRequestToJSON,
 } from '../types';
+import {
+  AddUserSubmissionRequest,
+  AddUserSubmissionRequestToJSON,
+} from '../../generated-types/models';
 
 // API base URL configuration
 // Android emulator uses 10.0.2.2 to access host localhost
@@ -232,4 +236,19 @@ export const api = {
   // Progress analytics
   getProgressAnalytics: (period: string) =>
     apiRequest<UserProgressAnalytics[]>(`/progressAnalytics?period=${period}`),
+
+  // User submissions (feedback)
+  getMyUserSubmissions: () =>
+    apiRequest<object[]>('/userSubmission/getMyUserSubmissions'),
+
+  addUserSubmission: (submissionType: string, description: string) => {
+    const request: AddUserSubmissionRequest = {
+      submissionType: submissionType as AddUserSubmissionRequest['submissionType'],
+      description,
+    };
+    return apiRequest<MessageResponse>('/userSubmission/addUserSubmission', {
+      method: 'POST',
+      body: JSON.stringify(AddUserSubmissionRequestToJSON(request)),
+    });
+  },
 };

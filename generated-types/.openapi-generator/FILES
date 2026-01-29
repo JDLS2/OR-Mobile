@@ -5,9 +5,11 @@ apis/MediaProgressUserRequestControllerApi.ts
 apis/MediaSitesControllerApi.ts
 apis/ProgressAnalyticsControllerApi.ts
 apis/UserControllerApi.ts
+apis/UserSubmissionControllerApi.ts
 apis/index.ts
 docs/AddMediaProgressRequest.md
 docs/AddUserRequest.md
+docs/AddUserSubmissionRequest.md
 docs/AuthControllerApi.md
 docs/DeleteTrackedMediaRequest.md
 docs/EmailLoginRequest.md
@@ -31,9 +33,11 @@ docs/ResetPasswordRequest.md
 docs/SendEmailLoginLinkRequest.md
 docs/UserControllerApi.md
 docs/UserDto.md
+docs/UserSubmissionControllerApi.md
 index.ts
 models/AddMediaProgressRequest.ts
 models/AddUserRequest.ts
+models/AddUserSubmissionRequest.ts
 models/DeleteTrackedMediaRequest.ts
 models/EmailLoginRequest.ts
 models/LoginRequest.ts

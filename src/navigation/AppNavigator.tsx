@@ -14,6 +14,7 @@ import {
   AnalyticsScreen,
   ResetPasswordScreen,
   ReadInAppScreen,
+  FeedbackScreen,
 } from '../screens';
 
 export type RootStackParamList = {
@@ -29,6 +30,7 @@ export type DrawerParamList = {
   Requests: undefined;
   Analytics: undefined;
   ReadInApp: {url?: string} | undefined;
+  Feedback: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -52,6 +54,7 @@ function MainDrawer() {
       <Drawer.Screen name="ReadInApp" component={ReadInAppScreen} />
       <Drawer.Screen name="Requests" component={RequestsScreen} />
       <Drawer.Screen name="Analytics" component={AnalyticsScreen} />
+      <Drawer.Screen name="Feedback" component={FeedbackScreen} />
     </Drawer.Navigator>
   );
 }
