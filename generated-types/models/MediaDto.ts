@@ -86,14 +86,14 @@ export interface MediaDto {
  * @export
  */
 export const MediaDtoTypeEnum = {
-    Manga: 'Manga',
-    Manhwa: 'Manhwa',
-    LightNovel: 'Light Novel',
-    Webtoon: 'Webtoon',
-    Manhua: 'Manhua',
-    Novel: 'Novel',
-    Comic: 'Comic',
-    Other: 'Other'
+    Manga: 'MANGA',
+    Manhwa: 'MANHWA',
+    LightNovel: 'LIGHT_NOVEL',
+    Webtoon: 'WEBTOON',
+    Manhua: 'MANHUA',
+    Novel: 'NOVEL',
+    Comic: 'COMIC',
+    Other: 'OTHER'
 } as const;
 export type MediaDtoTypeEnum = typeof MediaDtoTypeEnum[keyof typeof MediaDtoTypeEnum];
 

@@ -5,6 +5,7 @@ export * from './MediaControllerApi';
 export * from './MediaProgressControllerApi';
 export * from './MediaProgressUserRequestControllerApi';
 export * from './MediaSitesControllerApi';
+export * from './NotificationControllerApi';
 export * from './ProgressAnalyticsControllerApi';
 export * from './UserControllerApi';
 export * from './UserSubmissionControllerApi';
