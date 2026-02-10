@@ -19,3 +19,7 @@ export * from './RegisterRequest';
 export * from './ResetPasswordRequest';
 export * from './SendEmailLoginLinkRequest';
 export * from './UserDto';
+export * from './NotificationPayload';
+export * from './UserNotificationDto';
+export * from './WebSocketRequest';
+export * from './WebSocketResponse';

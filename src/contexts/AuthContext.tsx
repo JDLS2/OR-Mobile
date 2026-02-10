@@ -9,6 +9,7 @@ import Toast from 'react-native-toast-message';
 import {api, setLogoutCallback} from '../api/api';
 import {storage} from '../utils/storage';
 import {User} from '../types';
+import {useNotificationSocket} from '../hooks/useNotificationSocket';
 
 interface AuthContextType {
   user: User | null;
@@ -23,6 +24,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({children}: {children: ReactNode}) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Connect to notification WebSocket when user is authenticated
+  useNotificationSocket(!!user);
 
   const logout = async () => {
     await storage.clearAuth();

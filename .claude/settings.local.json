@@ -30,7 +30,16 @@
       "Bash(.gradlew.bat clean)",
       "Bash(cmd /c \"gradlew.bat clean\")",
       "Bash(node scripts/generate-icons.js:*)",
-      "Bash(npx eslint:*)"
+      "Bash(npx eslint:*)",
+      "Bash(xargs:*)",
+      "Bash(git -C \"C:\\\\Git\\\\OR-Mobile\" log --oneline --all -20)",
+      "Bash(git -C \"C:\\\\Git\\\\OR-Mobile\" show 5a494e6 --stat)",
+      "Bash(git -C \"C:\\\\Git\\\\OR-Mobile\" log --oneline --grep=\"api\\\\|network\\\\|endpoint\\\\|url\\\\|config\" -i)",
+      "Bash(git -C \"C:\\\\Git\\\\OR-Mobile\" show 5a494e6:src/api/api.ts)",
+      "Bash(git -C \"C:\\\\Git\\\\OR-Mobile\" diff 244a457..5a494e6 -- src/api/api.ts)",
+      "Bash(git -C \"C:\\\\Git\\\\OR-Mobile\" log --all --oneline -- src/api/api.ts)",
+      "Bash(git -C \"C:\\\\Git\\\\OR-Mobile\" show HEAD:src/api/api.ts)",
+      "Bash(git -C \"C:\\\\Git\\\\OR-Mobile\" log --all --oneline -- \"*api*\")"
     ],
     "deny": [],
     "ask": []

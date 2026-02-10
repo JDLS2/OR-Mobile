@@ -7,6 +7,15 @@ import Toast from 'react-native-toast-message';
 
 import {AuthProvider} from './src/contexts/AuthContext';
 import {AppNavigator} from './src/navigation/AppNavigator';
+import {
+  NotificationSuccessToast,
+  NotificationErrorToast,
+} from './src/components/ExpandableToast';
+
+const toastConfig = {
+  notificationSuccess: NotificationSuccessToast,
+  notificationError: NotificationErrorToast,
+};
 
 function App(): React.JSX.Element {
   return (
@@ -16,7 +25,7 @@ function App(): React.JSX.Element {
         <AuthProvider>
           <AppNavigator />
         </AuthProvider>
-        <Toast />
+        <Toast config={toastConfig} />
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

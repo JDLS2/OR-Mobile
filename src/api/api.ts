@@ -73,21 +73,34 @@ async function clearAuthAndLogout() {
   }
 }
 
+const REQUEST_TIMEOUT_MS = 20000;
+
+interface ApiRequestOptions extends RequestInit {
+  skipLogoutOnTimeout?: boolean;
+}
+
 async function apiRequest<T>(
   endpoint: string,
-  options: RequestInit = {},
+  options: ApiRequestOptions = {},
 ): Promise<ApiResponse<T>> {
+  const {skipLogoutOnTimeout, ...fetchOptions} = options;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
   try {
     const token = await storage.getToken();
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      ...options,
+      ...fetchOptions,
+      signal: controller.signal,
       headers: {
         'Content-Type': 'application/json',
         ...(token && {Authorization: `Bearer ${token}`}),
-        ...options.headers,
+        ...fetchOptions.headers,
       },
     });
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       // Check for auth-related errors and force logout
@@ -114,6 +127,22 @@ async function apiRequest<T>(
     const data = await response.json();
     return {data, statusCode: response.status};
   } catch (error) {
+    clearTimeout(timeoutId);
+
+    if (error instanceof Error && error.name === 'AbortError') {
+      Toast.show({
+        type: 'error',
+        text1: 'Request Timed Out',
+        text2: 'The server did not respond in time. Please try again later.',
+      });
+
+      if (!skipLogoutOnTimeout) {
+        await clearAuthAndLogout();
+      }
+
+      return {error: 'Request timed out'};
+    }
+
     const errorMessage =
       error instanceof Error ? error.message : 'Network error';
 
@@ -128,6 +157,7 @@ export const api = {
     return apiRequest<AuthResponse>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(LoginRequestToJSON(request)),
+      skipLogoutOnTimeout: true,
     });
   },
 
@@ -136,6 +166,7 @@ export const api = {
     return apiRequest<MessageResponse>('/auth/register', {
       method: 'POST',
       body: JSON.stringify(RegisterRequestToJSON(request)),
+      skipLogoutOnTimeout: true,
     });
   },
 
@@ -149,6 +180,7 @@ export const api = {
     return apiRequest<MessageResponse>('/auth/sendEmailLoginLink', {
       method: 'POST',
       body: JSON.stringify(SendEmailLoginLinkRequestToJSON(request)),
+      skipLogoutOnTimeout: true,
     });
   },
 
@@ -157,6 +189,7 @@ export const api = {
     return apiRequest<AuthResponse>('/auth/loginViaEmailLink', {
       method: 'POST',
       body: JSON.stringify(EmailLoginRequestToJSON(request)),
+      skipLogoutOnTimeout: true,
     });
   },
 
