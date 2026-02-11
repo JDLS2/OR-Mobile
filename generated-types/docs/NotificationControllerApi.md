@@ -10,7 +10,7 @@ All URIs are relative to *http://localhost:8080*
 
 ## getNotifications
 
-> object getNotifications()
+> UserNotificationListDto getNotifications()
 
 
 
@@ -45,7 +45,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-**object**
+[**UserNotificationListDto**](UserNotificationListDto.md)
 
 ### Authorization
 

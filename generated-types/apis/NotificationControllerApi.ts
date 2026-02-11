@@ -14,6 +14,13 @@
 
 
 import * as runtime from '../runtime';
+import type {
+  UserNotificationListDto,
+} from '../models/index';
+import {
+    UserNotificationListDtoFromJSON,
+    UserNotificationListDtoToJSON,
+} from '../models/index';
 
 /**
  * 
@@ -22,7 +29,7 @@ export class NotificationControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getNotificationsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async getNotificationsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserNotificationListDto>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -37,12 +44,12 @@ export class NotificationControllerApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserNotificationListDtoFromJSON(jsonValue));
     }
 
     /**
      */
-    async getNotifications(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async getNotifications(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserNotificationListDto> {
         const response = await this.getNotificationsRaw(initOverrides);
         return await response.value();
     }

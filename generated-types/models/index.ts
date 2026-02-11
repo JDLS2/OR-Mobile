@@ -21,5 +21,6 @@ export * from './ResetPasswordRequest';
 export * from './SendEmailLoginLinkRequest';
 export * from './UserDto';
 export * from './UserNotificationDto';
+export * from './UserNotificationListDto';
 export * from './WebSocketRequest';
 export * from './WebSocketResponse';

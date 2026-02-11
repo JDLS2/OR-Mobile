@@ -37,6 +37,7 @@ docs/SendEmailLoginLinkRequest.md
 docs/UserControllerApi.md
 docs/UserDto.md
 docs/UserNotificationDto.md
+docs/UserNotificationListDto.md
 docs/UserSubmissionControllerApi.md
 docs/WebSocketRequest.md
 docs/WebSocketResponse.md
@@ -62,6 +63,7 @@ models/ResetPasswordRequest.ts
 models/SendEmailLoginLinkRequest.ts
 models/UserDto.ts
 models/UserNotificationDto.ts
+models/UserNotificationListDto.ts
 models/WebSocketRequest.ts
 models/WebSocketResponse.ts
 models/index.ts
