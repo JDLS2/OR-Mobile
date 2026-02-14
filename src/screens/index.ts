@@ -8,3 +8,4 @@ export {SettingsScreen} from './SettingsScreen';
 export {ResetPasswordScreen} from './ResetPasswordScreen';
 export {ReadInAppScreen} from './ReadInAppScreen';
 export {FeedbackScreen} from './FeedbackScreen';
+export {NotificationsScreen} from './NotificationsScreen';

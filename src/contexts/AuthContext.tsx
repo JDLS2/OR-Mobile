@@ -17,6 +17,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   signup: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
+  markNotificationAsRead: (notificationId: number) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,7 +27,7 @@ export function AuthProvider({children}: {children: ReactNode}) {
   const [isLoading, setIsLoading] = useState(true);
 
   // Connect to notification WebSocket when user is authenticated
-  useNotificationSocket(!!user);
+  const {markAsRead} = useNotificationSocket(!!user);
 
   const logout = async () => {
     await storage.clearAuth();
@@ -134,7 +135,7 @@ export function AuthProvider({children}: {children: ReactNode}) {
   };
 
   return (
-    <AuthContext.Provider value={{user, isLoading, login, signup, logout}}>
+    <AuthContext.Provider value={{user, isLoading, login, signup, logout, markNotificationAsRead: markAsRead}}>
       {children}
     </AuthContext.Provider>
   );

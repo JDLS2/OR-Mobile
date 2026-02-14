@@ -57,6 +57,7 @@ export function DrawerContent(props: DrawerContentComponentProps) {
     {key: 'Requests', label: 'My Requests', icon: 'R'},
     {key: 'Analytics', label: 'My Analytics', icon: 'A'},
     {key: 'Feedback', label: 'Feedback', icon: 'F'},
+    {key: 'Notifications', label: 'Notifications', icon: 'N'},
   ];
 
   const handleNavigation = (routeName: string) => {

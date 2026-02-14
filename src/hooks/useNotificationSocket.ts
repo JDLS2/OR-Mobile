@@ -40,6 +40,31 @@ export function useNotificationSocket(isAuthenticated: boolean) {
   const maxReconnectAttempts = 5;
   const baseReconnectDelay = 1000;
 
+  const markAsRead = useCallback((notificationId: number) => {
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      storage.getToken().then(token => {
+        const updatePayload = JSON.stringify(
+          WebSocketRequestToJSON({
+            requestType: WebSocketRequestRequestTypeEnum.Update,
+            token: token || undefined,
+            payload: {
+              userNotificationID: notificationId,
+              notificationStatus:
+                NotificationPayloadNotificationStatusEnum.Read,
+            },
+          }),
+        );
+        console.log('[WS] Sending UPDATE (READ ack):', updatePayload);
+        wsRef.current?.send(updatePayload);
+      });
+    } else {
+      console.warn(
+        '[WS] Cannot send READ ack — WebSocket not open, readyState:',
+        wsRef.current?.readyState,
+      );
+    }
+  }, []);
+
   const handleNotification = useCallback(
     (notification: UserNotificationDto) => {
       const message = notification.message || 'Notification';
@@ -66,30 +91,11 @@ export function useNotificationSocket(isAuthenticated: boolean) {
       }
 
       // Send acknowledgement back with status set to READ
-      if (wsRef.current?.readyState === WebSocket.OPEN) {
-        storage.getToken().then(token => {
-          const updatePayload = JSON.stringify(
-            WebSocketRequestToJSON({
-              requestType: WebSocketRequestRequestTypeEnum.Update,
-              token: token || undefined,
-              payload: {
-                userNotificationID: notification.id,
-                notificationStatus:
-                  NotificationPayloadNotificationStatusEnum.Read,
-              },
-            }),
-          );
-          console.log('[WS] Sending UPDATE (READ ack):', updatePayload);
-          wsRef.current?.send(updatePayload);
-        });
-      } else {
-        console.warn(
-          '[WS] Cannot send READ ack — WebSocket not open, readyState:',
-          wsRef.current?.readyState,
-        );
+      if (notification.id != null) {
+        markAsRead(notification.id);
       }
     },
-    [],
+    [markAsRead],
   );
 
   const connect = useCallback(() => {
@@ -214,5 +220,6 @@ export function useNotificationSocket(isAuthenticated: boolean) {
 
   return {
     isConnected: wsRef.current?.readyState === WebSocket.OPEN,
+    markAsRead,
   };
 }

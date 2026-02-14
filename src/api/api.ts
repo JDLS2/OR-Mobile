@@ -36,6 +36,7 @@ import {
   AddUserSubmissionRequest,
   AddUserSubmissionRequestToJSON,
 } from '../../generated-types/models';
+import {UserNotificationListDto} from '../../generated-types/models/UserNotificationListDto';
 
 // API base URL configuration
 // Android emulator uses 10.0.2.2 to access host localhost
@@ -273,6 +274,10 @@ export const api = {
   // User submissions (feedback)
   getMyUserSubmissions: () =>
     apiRequest<object[]>('/userSubmission/getMyUserSubmissions'),
+
+  // Notifications
+  getNotifications: () =>
+    apiRequest<UserNotificationListDto>('/notification/getNotifications'),
 
   addUserSubmission: (submissionType: string, description: string) => {
     const request: AddUserSubmissionRequest = {
