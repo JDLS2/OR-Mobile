@@ -35,6 +35,7 @@ import {
 import {
   AddUserSubmissionRequest,
   AddUserSubmissionRequestToJSON,
+  ValidateIsEligibleSiteResponse,
 } from '../../generated-types/models';
 import {UserNotificationListDto} from '../../generated-types/models/UserNotificationListDto';
 
@@ -278,6 +279,12 @@ export const api = {
   // Notifications
   getNotifications: () =>
     apiRequest<UserNotificationListDto>('/notification/getNotifications'),
+
+  // Validate if a site is eligible for tracking
+  validateIsEligibleSite: (url: string) =>
+    apiRequest<ValidateIsEligibleSiteResponse>(
+      `/mediaSites/validateIsEligibleSite?url=${encodeURIComponent(url)}`,
+    ),
 
   addUserSubmission: (submissionType: string, description: string) => {
     const request: AddUserSubmissionRequest = {

@@ -1,5 +1,6 @@
 import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {
+  Alert,
   View,
   Text,
   StyleSheet,
@@ -11,6 +12,7 @@ import {WebView} from 'react-native-webview';
 import type {WebViewNavigation} from 'react-native-webview';
 import {useFocusEffect, useRoute, RouteProp} from '@react-navigation/native';
 import {api} from '../api/api';
+import {ValidateIsEligibleSiteResponseCanTrackStatusEnum} from '../../generated-types/models';
 import {ScreenHeader} from '../components';
 
 type ReadInAppRouteParams = {
@@ -72,6 +74,37 @@ export function ReadInAppScreen() {
     if (url && url.startsWith('http') && !submittedUrls.current.has(url)) {
       submittedUrls.current.add(url);
       try {
+        const validationResult = await api.validateIsEligibleSite(url);
+
+        if (validationResult.error || !validationResult.data) {
+          console.log('Failed to validate URL:', validationResult.error);
+          return;
+        }
+
+        if (
+          validationResult.data.canTrackStatus ===
+          ValidateIsEligibleSiteResponseCanTrackStatusEnum.CannotTrack
+        ) {
+          const baseUrl = validationResult.data.baseUrl ?? url;
+          const errMsg =
+            validationResult.data.errMsg ?? 'Unknown reason';
+
+          // Remove from cache so the dialog always shows if navigated to again
+          submittedUrls.current.delete(url);
+
+          // Clear the webview immediately
+          setCurrentUrl('');
+          setInputUrl('');
+
+          Alert.alert(
+            'Cannot Track Site',
+            `The site ${baseUrl} cannot be tracked. The reason: ${errMsg}.`,
+            [{text: 'OK'}],
+            {cancelable: false},
+          );
+          return;
+        }
+
         await api.submitUrl(url);
       } catch (error) {
         // Silently fail - we don't want to interrupt the user's browsing

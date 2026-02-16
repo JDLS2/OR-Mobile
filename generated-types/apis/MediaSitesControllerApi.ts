@@ -16,11 +16,22 @@
 import * as runtime from '../runtime';
 import type {
   MediaSiteDto,
+  ValidateIsEligibleSiteResponse,
 } from '../models/index';
 import {
     MediaSiteDtoFromJSON,
     MediaSiteDtoToJSON,
+    ValidateIsEligibleSiteResponseFromJSON,
+    ValidateIsEligibleSiteResponseToJSON,
 } from '../models/index';
+
+export interface CreateMediaSiteRequest {
+    mediaSiteDto: MediaSiteDto;
+}
+
+export interface DeleteMediaSiteRequest {
+    mediaSiteDto: MediaSiteDto;
+}
 
 export interface GetMediaSitesRequest {
     siteStatus?: string;
@@ -30,10 +41,88 @@ export interface UpdateMediaSiteRequest {
     mediaSiteDto: MediaSiteDto;
 }
 
+export interface ValidateIsEligibleSiteRequest {
+    url: string;
+}
+
 /**
  * 
  */
 export class MediaSitesControllerApi extends runtime.BaseAPI {
+
+    /**
+     */
+    async createMediaSiteRaw(requestParameters: CreateMediaSiteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MediaSiteDto>> {
+        if (requestParameters['mediaSiteDto'] == null) {
+            throw new runtime.RequiredError(
+                'mediaSiteDto',
+                'Required parameter "mediaSiteDto" was null or undefined when calling createMediaSite().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/mediaSites/createMediaSite`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: MediaSiteDtoToJSON(requestParameters['mediaSiteDto']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => MediaSiteDtoFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async createMediaSite(requestParameters: CreateMediaSiteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MediaSiteDto> {
+        const response = await this.createMediaSiteRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async deleteMediaSiteRaw(requestParameters: DeleteMediaSiteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MediaSiteDto>> {
+        if (requestParameters['mediaSiteDto'] == null) {
+            throw new runtime.RequiredError(
+                'mediaSiteDto',
+                'Required parameter "mediaSiteDto" was null or undefined when calling deleteMediaSite().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/mediaSites/deleteMediaSite`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: MediaSiteDtoToJSON(requestParameters['mediaSiteDto']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => MediaSiteDtoFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async deleteMediaSite(requestParameters: DeleteMediaSiteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MediaSiteDto> {
+        const response = await this.deleteMediaSiteRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      */
@@ -100,6 +189,44 @@ export class MediaSitesControllerApi extends runtime.BaseAPI {
      */
     async updateMediaSite(requestParameters: UpdateMediaSiteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MediaSiteDto> {
         const response = await this.updateMediaSiteRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async validateIsEligibleSiteRaw(requestParameters: ValidateIsEligibleSiteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ValidateIsEligibleSiteResponse>> {
+        if (requestParameters['url'] == null) {
+            throw new runtime.RequiredError(
+                'url',
+                'Required parameter "url" was null or undefined when calling validateIsEligibleSite().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['url'] != null) {
+            queryParameters['url'] = requestParameters['url'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/mediaSites/validateIsEligibleSite`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ValidateIsEligibleSiteResponseFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async validateIsEligibleSite(requestParameters: ValidateIsEligibleSiteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ValidateIsEligibleSiteResponse> {
+        const response = await this.validateIsEligibleSiteRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

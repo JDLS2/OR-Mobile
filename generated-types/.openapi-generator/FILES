@@ -39,6 +39,7 @@ docs/UserDto.md
 docs/UserNotificationDto.md
 docs/UserNotificationListDto.md
 docs/UserSubmissionControllerApi.md
+docs/ValidateIsEligibleSiteResponse.md
 docs/WebSocketRequest.md
 docs/WebSocketResponse.md
 index.ts
@@ -64,6 +65,7 @@ models/SendEmailLoginLinkRequest.ts
 models/UserDto.ts
 models/UserNotificationDto.ts
 models/UserNotificationListDto.ts
+models/ValidateIsEligibleSiteResponse.ts
 models/WebSocketRequest.ts
 models/WebSocketResponse.ts
 models/index.ts
